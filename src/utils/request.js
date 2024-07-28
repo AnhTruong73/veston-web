@@ -5,7 +5,7 @@ import { WS_API, COOKIE_KEY } from '../web.config';
 
 const instance = axios.create({
   baseURL: WS_API,
-  timeout: 60000,
+  timeout: 300000,
   //transformRequest: [(data) => JSON.stringify(data)],
   source: '/api/:path*',
   headers: {
