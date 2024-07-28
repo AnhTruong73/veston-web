@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-export const maxDuration = 300;
+export const maxDuration = 60;
 import bcrypt from 'bcryptjs';
 import { LOGIN_MESSAGE } from '@/message';
 import ResponseObject from '../../responseObject';
