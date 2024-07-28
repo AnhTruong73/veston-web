@@ -92,9 +92,15 @@ export default function EmployeeAddForm(data) {
     }
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = (e) => {
+    debugger;
+    handlerSubmit(e);
+  };
+
+  const handlerSubmit = async (e) => {
     e.cre_usr_id = users.usrname;
     console.log(e.birthday);
+
     try {
       // e =  {...e, 'flagAcc': flagAcc}
       const insEmp = await insertEmployee(e);
@@ -145,19 +151,6 @@ export default function EmployeeAddForm(data) {
   useEffect(() => {
     handleSelectArea();
   }, []);
-  // const handleAcc = async () => {
-  //     setflagAcc(false);
-  // };
-
-  // const handleOchan = async (e) => {
-  //     const eAcc = {'email': e.target.value}
-  //     try {
-  //         const { data } = await searchAccount(eAcc);
-  //         setUsername(data.rows[0].usrname);
-  //     } catch (e) {
-
-  //     }
-  // };
 
   useEffect(() => {
     dispatch(refreshFormEmp());
@@ -180,7 +173,7 @@ export default function EmployeeAddForm(data) {
           <form disable={isLoading} onSubmit={form.handleSubmit(onSubmit)}>
             <CardHeader className=""></CardHeader>
             <CardContent className="p-6 text-sm">
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="imgsrc"
                 hidden
@@ -189,7 +182,7 @@ export default function EmployeeAddForm(data) {
                     <ImageProfile setValue={form.setValue} />
                   </>
                 )}
-              />
+              /> */}
             </CardContent>
             <CardContent>
               <FormField
@@ -471,124 +464,17 @@ export default function EmployeeAddForm(data) {
                   </FormItem>
                 )}
               />
-              {/* 
-            <FormField
-                className=""
-                control={form.control}
-                name="img_employee"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Employee Image</FormLabel>
-                    <FormControl>
-                        <Image
-                        {...field}
-                        src='/images/background.png'
-                        alt='image'
-                        width={500}
-                        height={500}
-                        />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
 
               <Separator className="mb-2 mt-8" />
-              {/* <FormField
-                className=""
-                control={form.control}
-                name="usrname"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        {...form.register('usrname')}
-                        disabled = {flagAcc}
-                        ></Input>
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
-                <FormField
-                className=""
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                        <Input
-                        {...field}
-                        {...form.register('password')}
-                        type="password"
-                        defaultValue=''
-                        disabled = {flagAcc}
-                        ></Input>
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
-                <FormField
-                className=""
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Confirm password</FormLabel>
-                    <FormControl>
-                        <Input
-                        {...field}
-                        {...form.register('confirmPassword', {
-                            validate: value =>
-                              value === form.watch('password') || "Passwords do not match"
-                          })}
-                        type="password"
-                        defaultValue=''
-                        disabled = {flagAcc}
-                        ></Input>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
             </CardContent>
             <CardContent className="flex justify-end">
               <div className="flex space-x-4 p-4 rounded-lg">
-                {/* <Button type="button"  onClick = {handleAcc} >Add Account</Button> */}
                 <Button type="submit">Save</Button>
               </div>
             </CardContent>
           </form>
         </Form>
       </Card>
-
-      {/* <Card className="overflow-hidden" x-chunk="dashboard-05-chunk-4">
-        <CardHeader className="flex flex-row items-start bg-muted/50">
-            <div className="grid gap-0.5">
-            <CardTitle className="group flex items-center gap-2 text-lg">
-                <div className="font-medium">Trương Đình Ánh</div>
-                <div className="hidden text-sm text-muted-foreground md:inline">
-                (ID: HCM01E0001)
-                </div>
-            </CardTitle>
-            <CardDescription>Created By: POSTMAN</CardDescription>
-            </div>
-        </CardHeader>
-        <CardContent className="p-6 text-sm">
-            <div className="grid gap-3">
-            <ImageProfile />
-            </div>
-        </CardContent>
-        <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3">
-            <div className="text-xs text-muted-foreground">
-            Updated <time dateTime="2023-11-23">November 23, 2023</time>
-            </div>
-        </CardFooter>
-        </Card> */}
     </div>
   );
 }

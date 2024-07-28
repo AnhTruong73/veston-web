@@ -47,7 +47,9 @@ export default function MaterialSearchForm() {
       // phone_otp: '',
       // address_otp: '',
 
-      branch_id_otp: userInfo.personalProfile.branchBranch_id,
+      branch_id_otp: userInfo.personalProfile
+        ? userInfo.personalProfile.branchBranch_id
+        : '',
     },
   });
 
