@@ -127,6 +127,22 @@ export default function EmployeeAddForm(data) {
     form.reset();
   };
 
+  const handleSelectArea = async () => {
+    try {
+      const { data } = await searchArea();
+      dispatch(getListAreaSuccess(data.rows));
+    } catch (e) {
+      toast({
+        variant: 'destructive',
+        title: 'Searching failed!',
+        description: e ?? 'Có lỗi xảy ra!',
+      });
+    }
+  };
+
+  useEffect(() => {
+    handleSelectArea();
+  }, []);
   // const handleAcc = async () => {
   //     setflagAcc(false);
   // };
@@ -196,7 +212,6 @@ export default function EmployeeAddForm(data) {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
-                              {/* Map over the options array to create option elements */}
                               {options.map((option) => (
                                 <SelectItem value={option.area_id}>
                                   {option.area_nm}
