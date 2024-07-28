@@ -1,19 +1,19 @@
 module.exports = {
-  "development": {
-    host: "26.221.253.2",
-    port: "5432",
-    user: "postgres",
-    password: "JAYTRUONG2024!",
-    database: "postgres"
+  development: {
+    host: 'ep-green-bird-a1loz69i-pooler.ap-southeast-1.aws.neon.tech',
+    port: '5432',
+    user: 'default',
+    password: '1qsLStBwb8AP',
+    database: 'verceldb',
   },
-  "production": {
+  production: {
     connectionString: process.env.POSTGRES_URL,
   },
-  "qc": {
-    host: "26.221.253.2",
-    port: "5432",
-    user: "postgres",
-    password: "JAYTRUONG2024!",
-    database: "postgres"
-  }
-}
+  qc: {
+    host: 'ep-green-bird-a1loz69i-pooler.ap-southeast-1.aws.neon.tech',
+    port: '5432',
+    user: 'default',
+    password: '1qsLStBwb8AP',
+    database: 'verceldb',
+  },
+};

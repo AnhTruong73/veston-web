@@ -1,5 +1,5 @@
-import HeaderHome from '@/app/layouts/home/HeaderMain';
-import NavHome from '@/app/layouts/home/NavMain';
+import HeaderHome from '../../layouts/home/headerMain';
+import NavHome from '../../layouts/home/NavMain';
 
 export default function HomeLayout({ children }) {
   return (
