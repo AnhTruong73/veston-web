@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {
+  getListAreaSuccess,
   getListRequestSuccess,
   refreshFormEmp,
 } from '@/app/redux/slice/scense/employee';
@@ -44,6 +45,7 @@ import { searchBranch } from '@/app/apis/branch/branch';
 import { useForm } from 'react-hook-form';
 import { useToast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { searchArea } from '@/app/apis/area/area';
 
 export default function EmployeeAddForm(data) {
   const options = useSelector((state) => state.employee.optionSelect);
