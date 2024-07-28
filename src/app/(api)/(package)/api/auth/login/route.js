@@ -87,3 +87,22 @@ export async function POST(req) {
     return NextResponse.json({ status: 0, message: LOGIN_MESSAGE.FAILED });
   }
 }
+
+export async function OPTIONS(req) {
+  try {
+    return NextResponse.json(
+      ResponseObject(
+        1,
+        LOGIN_MESSAGE.SEARCH_SUCCESS,
+        // areaArray,
+        'CLIENT API',
+        null
+      )
+    );
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+      ResponseObject(0, LOGIN_MESSAGE.FAILED, [], 'CLIENT API', null)
+    );
+  }
+}
