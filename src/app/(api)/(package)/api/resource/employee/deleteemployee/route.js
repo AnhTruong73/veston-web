@@ -34,6 +34,7 @@ export async function POST(req) {
             del_yn: del_ynEmp,
           },
         });
+
         return NextResponse.json(
           ResponseObject(
             1,

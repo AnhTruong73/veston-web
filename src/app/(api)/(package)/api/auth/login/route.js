@@ -26,6 +26,7 @@ export async function POST(req) {
     // const Users = await getUserByName({ usrname });
     const users = await prisma.account.findFirst({
       where: {
+        del_yn: 'N',
         usrname: { equals: usrname },
       },
       select: {

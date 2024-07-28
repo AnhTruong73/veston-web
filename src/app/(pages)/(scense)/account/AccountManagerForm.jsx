@@ -89,6 +89,8 @@ export default function AccountManagerForm() {
           const emp = await searchUser(emp_id);
           form.setValue('email', emp.data.rows.email);
           form.setValue('usr_name', emp.data.rows.employee_nm);
+          form.setValue('usrname', emp.data.rows.usrname);
+
           break;
         case 'Shareholder':
           const sh_id = { shareholder_id: e };

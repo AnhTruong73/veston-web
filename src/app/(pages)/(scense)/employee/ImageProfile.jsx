@@ -1,25 +1,31 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import Modal from '@/components/ui/Modal';
 import PencilIcon from '@/components/ui/PencilIcon';
 
 const ImageProfile = ({ imgsrc, setValue }) => {
-  const avatarUrl = useRef(null);
-  avatarUrl.current = imgsrc;
-  setValue('imgsrc', imgsrc);
-
+  const [avatarUrl, setAvatarUrl] = useState('');
+  // setAvatarUrl(imgsrc);
   const [modalOpen, setModalOpen] = useState(false);
 
   const updateAvatar = (imgSrc) => {
-    avatarUrl.current = imgSrc;
+    debugger;
+    setAvatarUrl(imgSrc);
     setValue('imgsrc', imgSrc);
   };
+  useEffect(
+    (e) => {
+      setValue('imgsrc', imgsrc);
+      setAvatarUrl(imgsrc);
+    },
+    [imgsrc]
+  );
 
   return (
     <div className="flex flex-col items-center pt-12">
       <div className="relative">
         <img
-          src={avatarUrl.current}
+          src={avatarUrl}
           alt="Avatar"
           className="w-[150px] h-[150px] rounded-full border-2 border-gray-400"
         />

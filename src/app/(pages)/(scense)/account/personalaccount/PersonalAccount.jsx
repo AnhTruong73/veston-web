@@ -218,8 +218,8 @@ export default function PersonalAccount(data) {
                       <ImageProfile
                         {...field}
                         {...form.register('personalProfile.imgsrc')}
-                        imgsrc={form.getValues('personalProfile.imgsrc')}
                         setValue={form.setValue}
+                        imgsrc={form.getValues('personalProfile.imgsrc')}
                       />
                     </>
                   );

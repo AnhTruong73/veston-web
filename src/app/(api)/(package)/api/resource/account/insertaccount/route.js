@@ -21,6 +21,8 @@ export async function POST(req) {
       del_yn = 'N',
     } = body;
 
+    const hashedPassword = await bcrypt.hash(password, 16);
+
     const existingUser = await prisma.account.findFirst({
       where: {
         OR: [
@@ -31,45 +33,45 @@ export async function POST(req) {
       select: {
         usrname: true,
         usr_email: true,
+        id: true,
       },
     });
-    console.log('Test' + usrname + email);
-    if (!existingUser) {
-      const hashedPassword = await bcrypt.hash(password, 16);
-      console.log(hashedPassword);
-      const creAccount = await prisma.account.create({
-        data: {
-          usr_email: email,
-          usr_name: usr_name,
-          usrname: usrname,
-          password: hashedPassword,
-          role: role,
-          del_yn: del_yn,
-          cre_usr_id: cre_usr_id,
-          upd_usr_id: cre_usr_id,
-          usr_id: usr_id,
-        },
-      });
-      if (creAccount) {
-        return NextResponse.json(
-          ResponseObject(1, LOGIN_MESSAGE.REGISTER_SUCCESS, [], 'Account', null)
-        );
-      }
+
+    const upsertAccountUser = await prisma.account.upsert({
+      where: {
+        usr_id: usr_id,
+        usrname: usrname,
+        id: existingUser ? existingUser.id * 1 : 0,
+      },
+      update: {
+        role: role,
+        password: hashedPassword,
+        upd_usr_id: cre_usr_id,
+      },
+      create: {
+        usr_email: email,
+        usr_name: usr_name,
+        usrname: usrname,
+        password: hashedPassword,
+        role: role,
+        del_yn: del_yn,
+        cre_usr_id: cre_usr_id,
+        upd_usr_id: cre_usr_id,
+        usr_id: usr_id,
+      },
+    });
+
+    if (upsertAccountUser) {
+      return NextResponse.json(
+        ResponseObject(1, LOGIN_MESSAGE.SAVE_SUCCESS, [], 'Account', null)
+      );
     } else {
-      console.log(existingUser.usrname == usrname);
-      if (existingUser.usr_email == email) {
-        return NextResponse.json(
-          ResponseObject(0, 'Email nay da co Account!', [], 'Account', null)
-        );
-      }
-      if (existingUser.usrname == usrname) {
-        return NextResponse.json(
-          ResponseObject(0, 'Username existed!', [], 'Account', null)
-        );
-      }
+      return NextResponse.json();
     }
   } catch (error) {
     console.log('Failed: ', error);
-    return NextResponse.json(400, LOGIN_MESSAGE.FAILED, [], 'Account', error);
+    return NextResponse.json(
+      ResponseObject(0, LOGIN_MESSAGE.FAILED, [], 'Account', null)
+    );
   }
 }

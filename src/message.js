@@ -20,4 +20,5 @@ export const LOGIN_MESSAGE = {
   ORDER_SUCCESS: 'Đặt hàng thành công!',
   ORDER_FAILED: 'Đặt hàng không thành công!',
   REJECT_SUCCESS: 'Huỷ bỏ đơn hàng thành công',
+  SAVE_FAILED: 'Lưu dữ liệu không thành công!',
 };

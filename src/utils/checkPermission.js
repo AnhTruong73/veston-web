@@ -1,9 +1,9 @@
 const rolePermissions = {
-  SUPPERADMIN: ['/home', '/users'],
-  BRANCHMANAGER: ['/home', '/profile'],
-  STOREMANAGER: ['/home'],
-  RECEPTIONIST: ['/home'],
-  SHAREHOLDER: ['/home'],
+  SUPPERADMIN: ['/home', '/auth/logout', '/users'],
+  BRANCHMANAGER: ['/home', '/auth/logout', '/profile'],
+  STOREMANAGER: ['/home', '/auth/logout'],
+  RECEPTIONIST: ['/home', '/auth/logout'],
+  SHAREHOLDER: ['/home', '/auth/logout'],
 };
 
 const checkPermission = (pathname, UserInfor) => {

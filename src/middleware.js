@@ -22,7 +22,6 @@ export function middleware(request) {
     const UserInfor = jwt.decode(sessionToken, JWT_SECRET);
     if (UserInfor) {
       console.log(UserInfor);
-      // console.log(`UserInfor-> ${UserInfor.id ? true : false}`);
       if (pathname === '/') {
         console.log('server redirect to home with /');
         endPoint = '/home';

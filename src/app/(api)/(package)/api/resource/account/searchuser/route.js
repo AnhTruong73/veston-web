@@ -44,7 +44,7 @@ export async function POST(req) {
       }
       if (employee_id) {
         console.log(employee_id);
-        const searchEmp = await prisma.employee.findFirst({
+        let searchEmp = await prisma.employee.findFirst({
           where: {
             AND: { employee_id: { equals: employee_id } },
           },
@@ -54,6 +54,18 @@ export async function POST(req) {
           },
         });
         if (searchEmp) {
+          const searchEmpAccount = await prisma.account.findFirst({
+            where: {
+              usr_id: employee_id,
+            },
+            select: {
+              usrname: true,
+            },
+          });
+
+          if (searchEmpAccount) {
+            searchEmp = { ...searchEmp, usrname: searchEmpAccount.usrname };
+          }
           return NextResponse.json(
             ResponseObject(
               1,
@@ -69,8 +81,14 @@ export async function POST(req) {
           );
         }
       }
+      return NextResponse.json(
+        ResponseObject(0, LOGIN_MESSAGE.SEARCH_FAILED, [], 'Employee', null)
+      );
     }
   } catch (error) {
     console.log(error);
+    return NextResponse.json(
+      ResponseObject(0, LOGIN_MESSAGE.SEARCH_FAILED, [], 'Employee', null)
+    );
   }
 }
