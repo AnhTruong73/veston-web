@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-export const maxDuration = 60;
+
 import prisma from '@/app/(api)/db/db';
 import * as z from 'zod';
 import bcrypt from 'bcryptjs';
