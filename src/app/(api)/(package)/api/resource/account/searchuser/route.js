@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+export const maxDuration = 300;
 import { LOGIN_MESSAGE } from '@/message';
 import ResponseObject from '../../responseObject';
 import prisma from '@/app/(api)/db/db';

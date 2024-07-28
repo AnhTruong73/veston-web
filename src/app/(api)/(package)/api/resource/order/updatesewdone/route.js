@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+export const maxDuration = 300;
 
 import { LOGIN_MESSAGE } from '@/message';
 import ResponseObject from '../../responseObject';
@@ -17,7 +18,7 @@ export async function POST(req) {
       const { sewingTicketId, orderId } = body;
 
       if (sewingTicketId) {
-        searchOtp.push({ sewingTicketId: {equals: sewingTicketId} });
+        searchOtp.push({ sewingTicketId: { equals: sewingTicketId } });
       }
 
       var updateOrder = await prisma.sewingticket.updateMany({
@@ -25,46 +26,33 @@ export async function POST(req) {
           AND: searchOtp,
         },
         data: {
-          status: "DONE"
+          status: 'DONE',
         },
       });
 
       var searchDoneSew = await prisma.sewingticket.count({
-        where:{
+        where: {
           orderId: orderId,
-          status: "DONE"
-        }
-      })
+          status: 'DONE',
+        },
+      });
 
       var searchSew = await prisma.sewingticket.count({
-        where:{
+        where: {
           orderId: orderId,
-        }
-      })
-
+        },
+      });
 
       if (updateOrder.length == 0) {
         return NextResponse.json(
-          ResponseObject(
-            0,
-            LOGIN_MESSAGE.UPDATE_FAILED,
-            [],
-            'Sewing',
-            {}
-          )
+          ResponseObject(0, LOGIN_MESSAGE.UPDATE_FAILED, [], 'Sewing', {})
         );
       } else {
-        if(searchDoneSew == searchSew){
+        if (searchDoneSew == searchSew) {
           return NextResponse.json(
-            ResponseObject(
-              1,
-              LOGIN_MESSAGE.SAVE_SUCCESS,
-              'DONE',
-              'Sewing',
-              {}
-            )
+            ResponseObject(1, LOGIN_MESSAGE.SAVE_SUCCESS, 'DONE', 'Sewing', {})
           );
-        }else{
+        } else {
           return NextResponse.json(
             ResponseObject(
               1,
@@ -82,5 +70,5 @@ export async function POST(req) {
     return NextResponse.json(
       ResponseObject(0, LOGIN_MESSAGE.FAILED, [], 'Sewing', error)
     );
-  } 
+  }
 }

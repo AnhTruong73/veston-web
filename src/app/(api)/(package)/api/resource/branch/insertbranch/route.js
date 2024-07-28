@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+export const maxDuration = 300;
 import * as z from 'zod';
 import { LOGIN_MESSAGE } from '@/message';
 import ResponseObject from '../../responseObject';
