@@ -1,0 +1,420 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id         Int      @id @default(autoincrement())
+  usr_email  String   @unique
+  usr_name   String
+  usrname    String   @unique
+  password   String
+  role       Role
+  del_yn     YesNo    @default(N)
+  cre_usr_id String   @db.Char(10)
+  cre_dt     DateTime @default(now()) @db.Timestamp(6)
+  upd_usr_id String   @db.Char(10)
+  upd_dt     DateTime @updatedAt @db.Timestamp(6)
+  usr_id     String?  @unique
+}
+
+model Branch {
+  area_id             String                @db.Char(3)
+  area_nm             String
+  branch_id           String                @db.Char(5)
+  branch_nm           String
+  email               String
+  phone               String
+  address             String
+  del_yn              YesNo                 @default(N)
+  cre_usr_id          String                @db.Char(10)
+  cre_dt              DateTime              @default(now()) @db.Timestamp(6)
+  upd_usr_id          String                @db.Char(10)
+  upd_dt              DateTime              @updatedAt @db.Timestamp(6)
+  headoffice_yn       YesNo                 @default(N)
+  employees           Employee[]
+  warehouse           WarehouseDetail[]
+  GoodsInvoice        GoodsInvoiceMaster[]
+  Sewingticket        Sewingticket[]
+  Orders              Orders[]
+  StoreProduct        StoreProduct[]
+  SewingticketRequest SewingticketRequest[]
+  OrdersRequest       OrdersRequest[]
+
+  @@id([branch_id])
+}
+
+model Employee {
+  Branch          Branch   @relation(fields: [branchBranch_id], references: [branch_id])
+  branchBranch_id String   @db.Char(5)
+  imgsrc          String?
+  employee_id     String   @id
+  employee_nm     String
+  position        Position
+  salary          Int
+  email           String?
+  birthday        DateTime
+  del_yn          YesNo    @default(N)
+  gender          Gender
+  address         String
+  phone           String
+  cre_usr_id      String   @db.Char(10)
+  cre_dt          DateTime @default(now()) @db.Timestamp(6)
+  upd_usr_id      String   @db.Char(10)
+  upd_dt          DateTime @updatedAt @db.Timestamp(6)
+}
+
+model Costcode {
+  cost_cd            String
+  cost_nm            String
+  cost_color         String
+  cost_type          String
+  cost_uom           String
+  WarehouseDetail    WarehouseDetail[]
+  cre_usr_id         String               @db.Char(10)
+  cre_dt             DateTime             @default(now()) @db.Timestamp(6)
+  upd_usr_id         String               @db.Char(10)
+  upd_dt             DateTime             @updatedAt @db.Timestamp(6)
+  GoodsInvoiceDetail GoodsInvoiceDetail[]
+  ProductDetail      ProductDetail[]
+
+  @@id([cost_cd])
+}
+
+model WarehouseDetail {
+  cost_cd    String
+  quantity   Float
+  costcode   Costcode @relation(fields: [cost_cd], references: [cost_cd])
+  cre_usr_id String   @db.Char(10)
+  cre_dt     DateTime @default(now()) @db.Timestamp(6)
+  upd_usr_id String   @db.Char(10)
+  upd_dt     DateTime @updatedAt @db.Timestamp(6)
+  branch     Branch   @relation(fields: [branch_id], references: [branch_id])
+  branch_id  String   @db.Char(5)
+
+  @@id([branch_id, cost_cd])
+}
+
+model GoodsInvoiceMaster {
+  inv_id                  String
+  branch                  Branch               @relation(fields: [branch_id], references: [branch_id])
+  branch_id               String               @db.Char(5)
+  status                  Status
+  total_amt               Int
+  provider_nm             String
+  provider_phone          String
+  issue_dt                String
+  provider_representative String
+  provider_address        String
+  goodsInvoiceDetail      GoodsInvoiceDetail[]
+  cre_usr_id              String               @db.Char(10)
+  cre_dt                  DateTime             @default(now()) @db.Timestamp(6)
+  upd_usr_id              String               @db.Char(10)
+  upd_dt                  DateTime             @updatedAt @db.Timestamp(6)
+
+  @@id([branch_id, inv_id])
+}
+
+model GoodsInvoiceDetail {
+  inv_id             String
+  branch_id          String             @db.Char(5)
+  total_amt          Float
+  cost_cd            String
+  quantity           Float
+  unit_amount        Float
+  discount           Float
+  tax                Float
+  cre_usr_id         String             @db.Char(10)
+  cre_dt             DateTime           @default(now()) @db.Timestamp(6)
+  upd_usr_id         String             @db.Char(10)
+  upd_dt             DateTime           @updatedAt @db.Timestamp(6)
+  GoodsInvoiceMaster GoodsInvoiceMaster @relation(fields: [branch_id, inv_id], references: [branch_id, inv_id])
+  costcode           Costcode           @relation(fields: [cost_cd], references: [cost_cd])
+
+  @@id([branch_id, inv_id, cost_cd])
+}
+
+model Product {
+  product_id          String                @db.Char(10)
+  product_name        String
+  description         String
+  category            FashionCategory
+  price               Float?
+  product_img         String
+  cre_usr_id          String                @db.Char(10)
+  cre_dt              DateTime              @default(now()) @db.Timestamp(6)
+  upd_usr_id          String                @db.Char(10)
+  upd_dt              DateTime              @updatedAt @db.Timestamp(6)
+  ProductDetail       ProductDetail[]
+  Sewingticket        Sewingticket[]
+  StoreProduct        StoreProduct[]
+  SewingticketRequest SewingticketRequest[]
+  Feedbacks           Feedbacks[]
+
+  @@id([product_id])
+}
+
+model StoreProduct {
+  id        Int    @default(autoincrement())
+  productId String @db.Char(10)
+  branchId  String @db.Char(5)
+
+  price      Float?
+  cre_usr_id String   @db.Char(10)
+  cre_dt     DateTime @default(now()) @db.Timestamp(6)
+  upd_usr_id String   @db.Char(10)
+  upd_dt     DateTime @updatedAt @db.Timestamp(6)
+
+  product Product @relation(fields: [productId], references: [product_id])
+  branch  Branch  @relation(fields: [branchId], references: [branch_id])
+
+  @@id([productId, branchId])
+}
+
+model ProductDetail {
+  product_id        String   @db.Char(10)
+  product_detail_id String
+  quantity          Float
+  cre_usr_id        String   @db.Char(10)
+  cre_dt            DateTime @default(now()) @db.Timestamp(6)
+  upd_usr_id        String   @db.Char(10)
+  upd_dt            DateTime @updatedAt @db.Timestamp(6)
+
+  product  Product  @relation(fields: [product_id], references: [product_id])
+  costcode Costcode @relation(fields: [product_detail_id], references: [cost_cd])
+
+  @@id([product_id, product_detail_id])
+}
+
+enum FashionCategory {
+  VEST
+  SHIRT
+  TROUSERS
+  BLAZER
+  GILE
+}
+
+enum Role {
+  SUPPERADMIN
+  BRANCHMANAGER
+  STOREMANAGER
+  RECEPTIONIST
+  SHAREHOLDER
+}
+
+enum YesNo {
+  Y
+  N
+}
+
+enum Position {
+  RECEPTIONIST
+  SEWINGSTAFF
+  STOREMANAGER
+  SHIPPER
+  SECURITYGUARD
+  BRANCHMANAGER
+  GENERALMANAGER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Status {
+  PENDING
+  REQUEST
+  REJECT
+  APPROVE
+  INPROCESS
+  DONE
+}
+
+model Shareholder {
+  imgsrc         String?
+  shareholder_id String   @id
+  shareholder_nm String
+  email          String?
+  birthday       DateTime
+  del_yn         YesNo    @default(N)
+  gender         Gender
+  share_value    Float
+  address        String
+  phone          String
+  cre_usr_id     String   @db.Char(10)
+  cre_dt         DateTime @default(now()) @db.Timestamp(6)
+  upd_usr_id     String   @db.Char(10)
+  upd_dt         DateTime @updatedAt @db.Timestamp(6)
+}
+
+model Customer {
+  customer_id     String           @id
+  customer_nm     String
+  email           String?
+  birthday        DateTime
+  del_yn          YesNo            @default(N)
+  gender          Gender
+  address         String
+  phone           String
+  cre_usr_id      String           @db.Char(10)
+  cre_dt          DateTime         @default(now()) @db.Timestamp(6)
+  upd_usr_id      String           @db.Char(10)
+  upd_dt          DateTime         @updatedAt @db.Timestamp(6)
+  Orders          Orders[]
+  OrdersRequest   OrdersRequest[]
+  CustomerAccount CustomerAccount?
+  Feedbacks       Feedbacks[]
+}
+
+model Categories {
+  id       Int          @id @default(autoincrement())
+  title    String
+  code     String
+  parentId Int?
+  parent   Categories?  @relation("CategoryToCategory", fields: [parentId], references: [id])
+  children Categories[] @relation("CategoryToCategory")
+}
+
+model Sewingticket {
+  id             Int      @default(autoincrement())
+  sewingTicketId String
+  orderId        String
+  height         Float
+  weight         Float
+  bust           Float
+  waist          Float
+  hips           Float
+  price          Float
+  quantity       Int?     @default(1)
+  status         Status
+  productId      String   @db.Char(10)
+  branchId       String   @db.Char(5)
+  cre_usr_id     String   @db.Char(10)
+  cre_dt         DateTime @default(now()) @db.Timestamp(6)
+  upd_usr_id     String   @db.Char(10)
+  upd_dt         DateTime @updatedAt @db.Timestamp(6)
+
+  product Product @relation(fields: [productId], references: [product_id])
+  branch  Branch  @relation(fields: [branchId], references: [branch_id])
+  Orders  Orders? @relation(fields: [orderId], references: [orderId])
+
+  @@id([orderId, sewingTicketId])
+}
+
+model Orders {
+  id              Int            @default(autoincrement())
+  orderId         String
+  fullName        String
+  phoneNumber     String
+  totalAmount     Float
+  customerId      String
+  email           String
+  shippingAddress String
+  status          Status
+  prepaid         Float?
+  shippingMethod  String
+  sewingticket    Sewingticket[]
+  est_delivery    String?
+  actual_delivery String?
+  branchId        String         @db.Char(5)
+
+  cre_usr_id String   @db.Char(10)
+  cre_dt     DateTime @default(now()) @db.Timestamp(6)
+  upd_usr_id String   @db.Char(10)
+  upd_dt     DateTime @updatedAt @db.Timestamp(6)
+  branch     Branch   @relation(fields: [branchId], references: [branch_id])
+  customer   Customer @relation(fields: [customerId], references: [customer_id])
+
+  @@id([orderId])
+}
+
+model SewingticketRequest {
+  id             Int      @default(autoincrement())
+  sewingTicketId String
+  orderId        String
+  height         Float
+  weight         Float
+  bust           Float
+  waist          Float
+  quantity       Int?     @default(1)
+  hips           Float
+  price          Float
+  status         Status
+  productId      String   @db.Char(10)
+  branchId       String   @db.Char(5)
+  cre_usr_id     String   @db.Char(10)
+  cre_dt         DateTime @default(now()) @db.Timestamp(6)
+  upd_usr_id     String   @db.Char(10)
+  upd_dt         DateTime @updatedAt @db.Timestamp(6)
+
+  product Product        @relation(fields: [productId], references: [product_id])
+  branch  Branch         @relation(fields: [branchId], references: [branch_id])
+  Orders  OrdersRequest? @relation(fields: [orderId], references: [orderId])
+
+  @@id([orderId, sewingTicketId])
+}
+
+model OrdersRequest {
+  id              Int                   @default(autoincrement())
+  orderId         String
+  fullName        String
+  phoneNumber     String
+  totalAmount     Float
+  customerId      String
+  email           String
+  shippingAddress String
+  status          Status
+  prepaid         Float?
+  shippingMethod  String
+  sewingticket    SewingticketRequest[]
+  est_delivery    String?
+  actual_delivery String?
+  branchId        String                @db.Char(5)
+
+  cre_usr_id String   @db.Char(10)
+  cre_dt     DateTime @default(now()) @db.Timestamp(6)
+  upd_usr_id String   @db.Char(10)
+  upd_dt     DateTime @updatedAt @db.Timestamp(6)
+  branch     Branch   @relation(fields: [branchId], references: [branch_id])
+  customer   Customer @relation(fields: [customerId], references: [customer_id])
+
+  @@id([orderId])
+}
+
+model CustomerAccount {
+  customer_id String   @id
+  email       String
+  password    String
+  customer    Customer @relation(fields: [customer_id], references: [customer_id])
+
+  cre_usr_id String   @db.Char(10)
+  cre_dt     DateTime @default(now()) @db.Timestamp(6)
+  upd_usr_id String   @db.Char(10)
+  upd_dt     DateTime @updatedAt @db.Timestamp(6)
+}
+
+model Feedbacks {
+  customer_id String
+  product_id  String
+  rate        Int?
+  content     String?
+  cre_usr_id  String   @db.Char(10)
+  cre_dt      DateTime @default(now()) @db.Timestamp(6)
+  upd_usr_id  String   @db.Char(10)
+  upd_dt      DateTime @updatedAt @db.Timestamp(6)
+  customer    Customer @relation(fields: [customer_id], references: [customer_id])
+  product     Product  @relation(fields: [product_id], references: [product_id])
+
+  @@id([customer_id, product_id])
+}
