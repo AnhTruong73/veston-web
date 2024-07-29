@@ -48,7 +48,6 @@ export async function POST(req) {
         return returnGoodInvoiceDetailList;
       }
     });
-    console.log(transactionTest);
     return NextResponse.json(
       ResponseObject(
         1,

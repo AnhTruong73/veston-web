@@ -39,18 +39,16 @@ export async function POST(req) {
           },
           orderBy: [{ cre_dt: 'asc' }],
         });
+        console.log(returnProductDetailList);
         const processedProductDetailList = returnProductDetailList.map(
           (product) => ({
             ...product,
-            product_img: product.product_img
-              ? product.product_img.split(';')[0]
-              : '',
+            product_img: product.product_img[0].img_src,
           })
         );
         return processedProductDetailList;
       }
     });
-    console.log(transactionTest);
     return NextResponse.json(
       ResponseObject(
         1,

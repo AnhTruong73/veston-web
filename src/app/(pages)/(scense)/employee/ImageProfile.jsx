@@ -9,7 +9,6 @@ const ImageProfile = ({ imgsrc, setValue }) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const updateAvatar = (imgSrc) => {
-    debugger;
     setAvatarUrl(imgSrc);
     setValue('imgsrc', imgSrc);
   };

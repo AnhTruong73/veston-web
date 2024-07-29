@@ -48,9 +48,6 @@ export async function GET(req, { params }) {
     const processedProductDetailList = returnProductDetailList.map(
       (product) => ({
         ...product,
-        product_img: product.product_img
-          ? product.product_img.split(';')[0]
-          : '',
         rating: getProductRating._avg.rate || 0,
         feedback_quantity: getProductRating._count.rate || 0,
         sold: getProductSales._count.productId || 0,

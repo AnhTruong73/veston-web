@@ -15,9 +15,17 @@ export async function POST(req) {
       const { paramsSearch } = body;
 
       if (paramsSearch.product_id) {
-        searchOtp.push({ product_id: { equals: paramsSearch.product_id } });
+        searchOtp.push({ product_id: paramsSearch.product_id });
       } else {
-        searchOtp.push({ product_id: { equals: null } });
+        return NextResponse.json(
+          ResponseObject(
+            0,
+            LOGIN_MESSAGE.MISSING_PARAMETER,
+            [],
+            'Product',
+            null
+          )
+        );
       }
     }
     var processedProductDetail = [];
@@ -56,11 +64,15 @@ export async function POST(req) {
       });
       processedProductDetail = returnProductDetail.map((product) => ({
         ...product,
-        product_img: product.product_img ? product.product_img.split(';') : [],
         storeProductPrice: getStoreProductPrice
           ? getStoreProductPrice.price
           : 0,
       }));
+    }
+    if (processedProductDetail.length == 0) {
+      return NextResponse.json(
+        ResponseObject(0, LOGIN_MESSAGE.SEARCH_FAILED, [], 'Product', null)
+      );
     }
     return NextResponse.json(
       ResponseObject(

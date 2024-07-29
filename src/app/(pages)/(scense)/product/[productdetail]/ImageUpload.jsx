@@ -57,7 +57,7 @@ const ImageUpload = ({ onImageUpload }) => {
         {selectedImages &&
           selectedImages?.map((selectedImage, index) => (
             <img
-              src={selectedImage}
+              src={selectedImage.img_src}
               // src ='/images/products/1720636671335.png'
               alt="Selected"
               className="w-[215px] h-[300px] object-cover"

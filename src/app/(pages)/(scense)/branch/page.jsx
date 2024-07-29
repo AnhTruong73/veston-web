@@ -12,13 +12,5 @@ export default function Branches() {
       </div>
       <BranchDetailForm />
     </>
-    //   <>
-    //   <div className="space-y-4 rounded-lg w-full">
-    //     <EmployeeSearchForm />
-    //     <TableEmployee />
-    //   </div>
-
-    //   <EmployeeDetailForm />
-    // </>
   );
 }

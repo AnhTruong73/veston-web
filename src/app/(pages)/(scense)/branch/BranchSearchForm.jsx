@@ -33,6 +33,7 @@ import {
   getListRequestError,
   refreshBranch,
 } from '@/app/redux/slice/scense/branch';
+import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
 import { useToast } from '@/components/ui/use-toast';
 import { FloatingLabelInput } from '@/components/ui/floating-label-input';
 import { setSearchOption } from '@/app/redux/slice/scense/branch';
@@ -82,16 +83,20 @@ export default function BranchSearchForm() {
         description: e ?? 'Có lỗi xảy ra!',
       });
       dispatch(getListRequestError(false));
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
 
   const onSubmit = (e) => {
+    dispatch(setLayoutLoading(true));
     dispatch(getListRequest(true));
     handleSearchRequest(e);
   };
 
   useEffect(() => {
     // form.handleSubmit();
+    dispatch(setLayoutLoading(false));
     dispatch(refreshBranch());
   }, []);
 
@@ -172,7 +177,7 @@ export default function BranchSearchForm() {
                   </FormItem>
                 )}
               />
-                <FormField
+              <FormField
                 className="grid items-center gap-1.5"
                 control={form.control}
                 name="del_yn_otp"
@@ -180,7 +185,7 @@ export default function BranchSearchForm() {
                   <FormItem>
                     <FormControl>
                       <FloatingLabelSelect
-                        label="Delete" 
+                        label="Delete"
                         defaultValue="N"
                         {...form.register('del_yn_otp')}
                         onValueChange={field.onChange}

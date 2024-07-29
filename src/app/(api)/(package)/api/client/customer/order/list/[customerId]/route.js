@@ -15,7 +15,10 @@ export async function GET(req, { params }) {
         sewingticket: {
           include: {
             product: {
-              include: { Feedbacks: true },
+              include: {
+                Feedbacks: true,
+                product_img: true,
+              },
             },
             branch: true,
           },
@@ -33,9 +36,7 @@ export async function GET(req, { params }) {
       order_items: order.sewingticket.map((item) => ({
         product_variant_id: item.productId,
         name: item.product.product_name,
-        image: item.product.product_img
-          ? item.product.product_img.split(';')[0]
-          : '',
+        image: item.product.product_img,
         height: item.height,
         weight: item.weight,
         bust: item.bust,

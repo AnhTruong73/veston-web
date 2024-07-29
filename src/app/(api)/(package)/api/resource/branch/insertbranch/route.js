@@ -24,7 +24,6 @@ export async function POST(req) {
     const sessionToken = req.cookies.get('token')?.value;
     if (sessionToken) {
       const userInfor = jwt.decode(sessionToken, JWT_SECRET).id;
-      console.log(userInfor);
       const {
         area_id,
         area_nm,

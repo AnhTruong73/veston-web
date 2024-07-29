@@ -93,7 +93,6 @@ export default function EmployeeAddForm(data) {
   };
 
   const onSubmit = (e) => {
-    debugger;
     handlerSubmit(e);
   };
 

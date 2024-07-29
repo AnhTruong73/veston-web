@@ -18,7 +18,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -27,11 +27,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Calendar } from "@/components/ui/calendar";
+import { Calendar } from '@/components/ui/calendar';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { cn } from "@/lib/utils"
-import { CalendarIcon } from "lucide-react"
-import { format } from "date-fns"
+import { cn } from '@/lib/utils';
+import { CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Input } from '@/components/ui/input';
@@ -43,10 +43,7 @@ import {
   setItemDetailRequestSuccess,
   refreshFormCT,
 } from '@/app/redux/slice/scense/customer';
-import {
- insertCustomer,
- updateCustomer,
-} from '@/app/apis/customer/customer';
+import { insertCustomer, updateCustomer } from '@/app/apis/customer/customer';
 import { useToast } from '@/components/ui/use-toast';
 import _ from 'lodash';
 import { CustomerFormValidations } from '@/validations/customer_validation';
@@ -58,18 +55,16 @@ export default function CustomerDetailForm(data) {
 
   const _ = require('lodash');
 
-  const form = useForm(
-    {
-      defaultValues: {
-        customer_nm: '',
-        address: '',
-        phone: '',
-        birthday: '',
-        email: '',
-        gender: '',
-      },
-    }
-  );
+  const form = useForm({
+    defaultValues: {
+      customer_nm: '',
+      address: '',
+      phone: '',
+      birthday: '',
+      email: '',
+      gender: '',
+    },
+  });
 
   const { toast } = useToast();
   const handleCloseForm = async () => {
@@ -77,28 +72,28 @@ export default function CustomerDetailForm(data) {
   };
 
   const ShareToCompare = [
-    'customer_nm', 
-    'address', 
-    'phone', 
-    'email', 
+    'customer_nm',
+    'address',
+    'phone',
+    'email',
     'birthday',
-    'gender'
+    'gender',
   ];
 
   const compareChange = (obj1, obj2, keys) => {
     for (let key of keys) {
-        if (_.get(obj1, key) !== _.get(obj2, key)) {
-            return false;
-        }
+      if (_.get(obj1, key) !== _.get(obj2, key)) {
+        return false;
+      }
     }
     return true;
-  }
+  };
 
   const handleUpdateRequest = async (paramsSearch) => {
     console.log(detailItem.birthday);
-    console.log(paramsSearch.birthday)
+    console.log(paramsSearch.birthday);
     try {
-      if(!compareChange(paramsSearch, detailItem, ShareToCompare)){
+      if (!compareChange(paramsSearch, detailItem, ShareToCompare)) {
         const { status, message, data } = await updateCustomer(paramsSearch);
         if (status == '1') {
           toast({
@@ -114,7 +109,7 @@ export default function CustomerDetailForm(data) {
           });
           dispatch(setLoading(false));
         }
-      }else{
+      } else {
         toast({
           variant: 'destructive',
           title: 'Update Failed!',
@@ -131,8 +126,7 @@ export default function CustomerDetailForm(data) {
     }
   };
   const handleInsertRequest = async (paramsSearch) => {
-    console.log(paramsSearch.share_value)
-    debugger
+    console.log(paramsSearch.share_value);
     try {
       const { status, message, data } = await insertCustomer(paramsSearch);
       if (status == '1') {
@@ -167,14 +161,13 @@ export default function CustomerDetailForm(data) {
         form.setValue(key, detailItem[key]);
       });
     } else if (detailItem && detailItem.flgTp == 'I') {
-      form.reset()
+      form.reset();
       Object.keys(form.getValues()).forEach((key) => {
         form.setValue(key, detailItem[key] ? detailItem[key] : '');
         form.setValue('flgTp', 'I');
       });
     }
   }, [detailItem, form.setValue, form.reset]);
-
 
   const onSubmit = (e) => {
     dispatch(setLoading(true));
@@ -214,7 +207,9 @@ export default function CustomerDetailForm(data) {
                       <FormControl>
                         <Input
                           {...field}
-                          {...form.register('customer_nm',{ required: 'Customer Name is required!' })}
+                          {...form.register('customer_nm', {
+                            required: 'Customer Name is required!',
+                          })}
                           {...isReadOnly}
                         ></Input>
                       </FormControl>
@@ -223,36 +218,38 @@ export default function CustomerDetailForm(data) {
                   )}
                 />
                 <FormField
-                className=""
-                control={form.control}
-                name="gender"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gender</FormLabel>
-                    <FormControl>
+                  className=""
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Gender</FormLabel>
                       <FormControl>
-                        <Select
-                          {...field}
-                          defaultValue="MALE"
-                          {...form.register('gender', {required: 'Gender is required!' })}
-                          onValueChange={field.onChange}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Please select gender!"/>
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectItem value="MALE">MALE</SelectItem>
-                              <SelectItem value="FEMALE">FEMALE</SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
+                        <FormControl>
+                          <Select
+                            {...field}
+                            defaultValue="MALE"
+                            {...form.register('gender', {
+                              required: 'Gender is required!',
+                            })}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Please select gender!" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectItem value="MALE">MALE</SelectItem>
+                                <SelectItem value="FEMALE">FEMALE</SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
                       </FormControl>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   className=""
                   control={form.control}
@@ -263,7 +260,9 @@ export default function CustomerDetailForm(data) {
                       <FormControl>
                         <Input
                           {...field}
-                          {...form.register('address',{ required: 'Customer Name is required!' })}
+                          {...form.register('address', {
+                            required: 'Customer Name is required!',
+                          })}
                           {...isReadOnly}
                         ></Input>
                       </FormControl>
@@ -281,7 +280,9 @@ export default function CustomerDetailForm(data) {
                       <FormControl>
                         <Input
                           {...field}
-                          {...form.register('phone',{ required: 'Phone Number is required!' })}
+                          {...form.register('phone', {
+                            required: 'Phone Number is required!',
+                          })}
                           {...isReadOnly}
                         ></Input>
                       </FormControl>
@@ -299,7 +300,9 @@ export default function CustomerDetailForm(data) {
                       <FormControl>
                         <Input
                           {...field}
-                          {...form.register('email',{ required: 'Email is required!' })}
+                          {...form.register('email', {
+                            required: 'Email is required!',
+                          })}
                           {...isReadOnly}
                         />
                       </FormControl>
@@ -307,50 +310,51 @@ export default function CustomerDetailForm(data) {
                     </FormItem>
                   )}
                 />
-               <FormField
-                className=""
-                control={form.control}
-                name="birthday"
-                render={({ field }) => {
-                  if (!field.value) {
-                    field.onChange(new Date()); // Set field value to current date if it's undefined
-                  }
-                  return (
-                    <FormItem>
-                      <FormLabel>Date of birth</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={'outline'}
-                            className={cn(
-                              'w-full justify-start text-left font-normal',
-                              !field.value && 'text-muted-foreground'
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value
-                              ? format(field.value, 'PPP')
-                              : format(new Date(), 'PPP')}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent>
-                          <Calendar
-                            mode="single"
-                            captionLayout="dropdown-buttons"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) =>
-                              date > new Date() || date < new Date('1900-01-01')
-                            }
-                            fromYear={1960}
-                            toYear={new Date().getFullYear()}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </FormItem>
-                  );
-                }}
-              />
+                <FormField
+                  className=""
+                  control={form.control}
+                  name="birthday"
+                  render={({ field }) => {
+                    if (!field.value) {
+                      field.onChange(new Date()); // Set field value to current date if it's undefined
+                    }
+                    return (
+                      <FormItem>
+                        <FormLabel>Date of birth</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={'outline'}
+                              className={cn(
+                                'w-full justify-start text-left font-normal',
+                                !field.value && 'text-muted-foreground'
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {field.value
+                                ? format(field.value, 'PPP')
+                                : format(new Date(), 'PPP')}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent>
+                            <Calendar
+                              mode="single"
+                              captionLayout="dropdown-buttons"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) =>
+                                date > new Date() ||
+                                date < new Date('1900-01-01')
+                              }
+                              fromYear={1960}
+                              toYear={new Date().getFullYear()}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </FormItem>
+                    );
+                  }}
+                />
                 <br />
                 <br />
                 <FormField

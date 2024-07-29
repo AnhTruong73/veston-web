@@ -39,7 +39,6 @@ export async function GET(req, { params }) {
 
     const processedProductDetail = returnProductDetail.map((product) => ({
       ...product,
-      product_img: product.product_img ? product.product_img.split(';') : [],
       price: getStoreProductPrice ? getStoreProductPrice.price : 0,
     }));
 

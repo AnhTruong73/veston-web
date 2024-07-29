@@ -28,7 +28,6 @@ export async function POST(req) {
       if (salary) {
         salInt = parseInt(salary, 10);
       }
-      console.log(body);
 
       const updateEmp = await prisma.employee.update({
         where: {
@@ -48,6 +47,22 @@ export async function POST(req) {
         },
       });
       if (updateEmp) {
+        const users = await prisma.account.findFirst({
+          where: {
+            del_yn: 'N',
+            usr_id: employee_id,
+          },
+          select: {
+            usrname: true,
+            password: true,
+            usr_email: true,
+            usr_name: true,
+            role: true,
+            id: true,
+            del_yn: true,
+            usr_id: true,
+          },
+        });
         const personalProfile = await prisma.employee.findUnique({
           where: { employee_id: employee_id },
           select: {
@@ -71,7 +86,7 @@ export async function POST(req) {
           ResponseObject(
             1,
             LOGIN_MESSAGE.SAVE_SUCCESS,
-            { personalProfile: personalProfile },
+            { ...users, personalProfile: personalProfile },
             'Employee',
             null
           )

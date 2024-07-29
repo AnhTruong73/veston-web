@@ -14,7 +14,11 @@ export async function GET(req, { params }) {
         category: true,
         description: true,
 
-        product_img: true,
+        product_img: {
+          include: {
+            img_src,
+          },
+        },
         _count: true,
       },
       orderBy: [{ cre_dt: 'asc' }],
@@ -36,9 +40,6 @@ export async function GET(req, { params }) {
 
         return {
           ...product,
-          product_img: product.product_img
-            ? product.product_img.split(';')[0]
-            : '',
           rating: getProductRating._avg.rate || 0,
           feedback_quantity: getProductRating._count.rate || 0,
         };

@@ -25,7 +25,7 @@ export async function POST(req) {
             fileArray.forEach(async (file) => {
               await tx.productImage.create({
                 data: {
-                  id: uuidv4,
+                  id: uuidv4(),
                   product_id: formValue.product_id,
                   img_src: file,
                 },
@@ -37,7 +37,6 @@ export async function POST(req) {
               product_id: formValue.product_id,
               product_name: formValue.product_name,
               price: formValue.price * 1,
-              product_img: imgPaths,
               category: formValue.category,
               description: formValue.description,
               cre_usr_id: tokenInfor.usr_id,
@@ -59,11 +58,7 @@ export async function POST(req) {
                   costcode: true,
                 },
               },
-              product_img: {
-                include: {
-                  img_src: true,
-                },
-              },
+              product_img: true,
             },
             orderBy: [{ cre_dt: 'asc' }],
           });
@@ -71,7 +66,6 @@ export async function POST(req) {
           return returnProductDetailList;
         }
       });
-      console.log(transactionTest);
       return NextResponse.json(
         ResponseObject(
           1,

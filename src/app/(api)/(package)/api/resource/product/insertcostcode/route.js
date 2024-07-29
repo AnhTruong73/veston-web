@@ -13,7 +13,6 @@ export async function POST(req) {
     const transactionTest = await prisma.$transaction(async (tx) => {
       const userInfor = CheckSessionToken(sessionToken);
       if (userInfor) {
-        console.log({ paramsAdd, productMaster });
         const mergeProductDetail = await tx.productDetail.upsert({
           where: {
             product_id_product_detail_id: {
