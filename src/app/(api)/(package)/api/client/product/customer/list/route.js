@@ -14,11 +14,7 @@ export async function GET(req, { params }) {
         category: true,
         description: true,
 
-        product_img: {
-          include: {
-            img_src,
-          },
-        },
+        product_img: true,
         _count: true,
       },
       orderBy: [{ cre_dt: 'asc' }],

@@ -18,11 +18,11 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils"
-import { CalendarIcon } from "lucide-react"
-import { format } from "date-fns"
+} from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
+import { CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Input } from '@/components/ui/input';
@@ -32,12 +32,12 @@ import {
   setItemDetailRequest,
   setLoading,
   setItemDetailRequestSuccess,
-  getListRequestSuccess
+  getListRequestSuccess,
 } from '@/app/redux/slice/scense/shareholder';
 import {
- insertShareholder,
- searchShareholder,
- updateShareholder,
+  insertShareholder,
+  searchShareholder,
+  updateShareholder,
 } from '@/app/apis/shareholder/shareholder';
 import { useToast } from '@/components/ui/use-toast';
 import _ from 'lodash';
@@ -50,8 +50,7 @@ export default function ShareDetailForm(data) {
 
   const _ = require('lodash');
 
-  const form = useForm(
-  );
+  const form = useForm();
 
   const { toast } = useToast();
   const handleCloseForm = async () => {
@@ -59,28 +58,28 @@ export default function ShareDetailForm(data) {
   };
 
   const ShareToCompare = [
-    'shareholder_nm', 
-    'address', 
-    'phone', 
-    'email', 
+    'shareholder_nm',
+    'address',
+    'phone',
+    'email',
     'birthday',
-    'share_value'
+    'share_value',
   ];
 
   const compareChange = (obj1, obj2, keys) => {
     for (let key of keys) {
-        if (_.get(obj1, key) !== _.get(obj2, key)) {
-            return false;
-        }
+      if (_.get(obj1, key) !== _.get(obj2, key)) {
+        return false;
+      }
     }
     return true;
-  }
+  };
 
   const handleUpdateRequest = async (paramsSearch) => {
     console.log(detailItem.birthday);
-    console.log(paramsSearch.birthday)
+    console.log(paramsSearch.birthday);
     try {
-      if(!compareChange(paramsSearch, detailItem, ShareToCompare)){
+      if (!compareChange(paramsSearch, detailItem, ShareToCompare)) {
         const { status, message, data } = await updateShareholder(paramsSearch);
         if (status == 1) {
           toast({
@@ -98,7 +97,7 @@ export default function ShareDetailForm(data) {
           });
           dispatch(setLoading(false));
         }
-      }else{
+      } else {
         toast({
           variant: 'destructive',
           title: 'Update Failed!',
@@ -109,13 +108,13 @@ export default function ShareDetailForm(data) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
       dispatch(setLoading(false));
     }
   };
   const handleInsertRequest = async (paramsSearch) => {
-    console.log(paramsSearch.share_value)
+    console.log(paramsSearch.share_value);
     try {
       const { status, message, data } = await insertShareholder(paramsSearch);
       if (status == 1) {
@@ -137,7 +136,7 @@ export default function ShareDetailForm(data) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
       dispatch(setLoading(false));
     }
@@ -193,7 +192,9 @@ export default function ShareDetailForm(data) {
                       <FormControl>
                         <Input
                           {...field}
-                          {...form.register('shareholder_nm',{ required: 'Shareholder Name is required!' })}
+                          {...form.register('shareholder_nm', {
+                            required: 'Shareholder Name is required!',
+                          })}
                           {...isReadOnly}
                         ></Input>
                       </FormControl>
@@ -211,7 +212,10 @@ export default function ShareDetailForm(data) {
                       <FormControl>
                         <Input
                           {...field}
-                          {...form.register('address',{ required: 'Address is required!', max: 100})}
+                          {...form.register('address', {
+                            required: 'Address is required!',
+                            max: 100,
+                          })}
                           {...isReadOnly}
                         ></Input>
                       </FormControl>
@@ -229,7 +233,9 @@ export default function ShareDetailForm(data) {
                       <FormControl>
                         <Input
                           {...field}
-                          {...form.register('phone',{ required: 'Phone Number is required!' })}
+                          {...form.register('phone', {
+                            required: 'Phone Number is required!',
+                          })}
                           {...isReadOnly}
                         ></Input>
                       </FormControl>
@@ -247,7 +253,9 @@ export default function ShareDetailForm(data) {
                       <FormControl>
                         <Input
                           {...field}
-                          {...form.register('email', {required: 'Email is required!'})}
+                          {...form.register('email', {
+                            required: 'Email is required!',
+                          })}
                           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                           {...isReadOnly}
                         />
@@ -256,51 +264,52 @@ export default function ShareDetailForm(data) {
                     </FormItem>
                   )}
                 />
-              <FormField
-                className=""
-                control={form.control}
-                name="birthday"
-                render={({ field }) => {
-                  if (!field.value) {
-                    field.onChange(new Date()); // Set field value to current date if it's undefined
-                  }
-                  return (
-                    <FormItem>
-                      <FormLabel>Date of birth</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={'outline'}
-                            className={cn(
-                              'w-full justify-start text-left font-normal',
-                              !field.value && 'text-muted-foreground'
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value
-                              ? format(field.value, 'PPP')
-                              : format(new Date(), 'PPP')}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent>
-                          <Calendar
-                            mode="single"
-                            captionLayout="dropdown-buttons"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) =>
-                              date > new Date() || date < new Date('1900-01-01')
-                            }
-                            fromYear={1960}
-                            toYear={new Date().getFullYear()}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </FormItem>
-                  );
-                }}
-              />
-                 <FormField
+                <FormField
+                  className=""
+                  control={form.control}
+                  name="birthday"
+                  render={({ field }) => {
+                    if (!field.value) {
+                      field.onChange(new Date()); // Set field value to current date if it's undefined
+                    }
+                    return (
+                      <FormItem>
+                        <FormLabel>Date of birth</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={'outline'}
+                              className={cn(
+                                'w-full justify-start text-left font-normal',
+                                !field.value && 'text-muted-foreground'
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {field.value
+                                ? format(field.value, 'PPP')
+                                : format(new Date(), 'PPP')}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent>
+                            <Calendar
+                              mode="single"
+                              captionLayout="dropdown-buttons"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) =>
+                                date > new Date() ||
+                                date < new Date('1900-01-01')
+                              }
+                              fromYear={1960}
+                              toYear={new Date().getFullYear()}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </FormItem>
+                    );
+                  }}
+                />
+                <FormField
                   className=""
                   control={form.control}
                   name="share_value"
@@ -311,7 +320,10 @@ export default function ShareDetailForm(data) {
                         <Input
                           {...field}
                           type="number"
-                          {...form.register('share_value', { valueAsNumber: true, required: 'Share Value is required!' })}
+                          {...form.register('share_value', {
+                            valueAsNumber: true,
+                            required: 'Share Value is required!',
+                          })}
                           {...isReadOnly}
                         />
                       </FormControl>

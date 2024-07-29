@@ -31,7 +31,6 @@ import { Button } from '@/components/ui/button';
 import { Cross1Icon } from '@radix-ui/react-icons';
 import {
   setItemDetailRequest,
-  setLoading,
   setItemDetailRequestSuccess,
   getListRequestSuccess,
 } from '@/app/redux/slice/scense/branch';
@@ -43,6 +42,7 @@ import {
 } from '@/app/apis/branch/branch';
 import { useToast } from '@/components/ui/use-toast';
 
+import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
 export default function BranchDetailForm(data) {
   const detailItem = useSelector((state) => state.branch.detail);
   const searchOption = useSelector((state) => state.branch.searchOption);
@@ -93,15 +93,15 @@ export default function BranchDetailForm(data) {
           title: 'Update Failed!',
           description: message,
         });
-        dispatch(setLoading(false));
       }
     } catch (e) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
-      dispatch(setLoading(false));
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
   const handleInsertRequest = async (paramsSearch) => {
@@ -120,15 +120,15 @@ export default function BranchDetailForm(data) {
           title: 'Insert Failed!',
           description: message,
         });
-        dispatch(setLoading(false));
       }
     } catch (e) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
-      dispatch(setLoading(false));
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
   useEffect(() => {
@@ -145,7 +145,7 @@ export default function BranchDetailForm(data) {
   }, [detailItem, form.setValue]);
 
   const onSubmit = (e) => {
-    dispatch(setLoading(true));
+    dispatch(setLayoutLoading(true));
     if (e.flgTp == 'U') handleUpdateRequest(e);
     else if (e.flgTp == 'I') handleInsertRequest(e);
   };

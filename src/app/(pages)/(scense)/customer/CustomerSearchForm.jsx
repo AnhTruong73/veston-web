@@ -24,12 +24,14 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form';
-
+import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
 import { searchCustomer } from '@/app/apis/customer/customer';
 import {
   getListRequest,
   getListRequestSuccess,
   getListRequestError,
+  refreshFormCT,
+  refreshcustomer,
 } from '@/app/redux/slice/scense/customer';
 import { useToast } from '@/components/ui/use-toast';
 import { FloatingLabelInput } from '@/components/ui/floating-label-input';
@@ -69,24 +71,28 @@ export default function CustomerSearchForm() {
           title: 'Searching failed!',
           description: message,
         });
-        dispatch(getListRequestError(false));
       }
     } catch (e) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
-      dispatch(getListRequestError(false));
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
 
   const onSubmit = (e) => {
+    dispatch(setLayoutLoading(true));
+
     dispatch(getListRequest(true));
     handleSearchRequest(e);
   };
 
   useEffect(() => {
+    dispatch(setLayoutLoading(false));
+    dispatch(refreshcustomer());
     // form.handleSubmit();
   }, []);
 
@@ -107,9 +113,10 @@ export default function CustomerSearchForm() {
                   <FormItem>
                     <FormControl>
                       <FloatingLabelInput
-                        label="Customer ID"  
-                        {...field} 
-                        {...form.register('customer_id')} />
+                        label="Customer ID"
+                        {...field}
+                        {...form.register('customer_id')}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -123,7 +130,7 @@ export default function CustomerSearchForm() {
                   <FormItem>
                     <FormControl>
                       <FloatingLabelInput
-                        label="Customer Name" 
+                        label="Customer Name"
                         {...field}
                         {...form.register('customer_nm')}
                       />
@@ -140,7 +147,7 @@ export default function CustomerSearchForm() {
                   <FormItem>
                     <FormControl>
                       <FloatingLabelSelect
-                        label="Delete" 
+                        label="Delete"
                         defaultValue="N"
                         {...form.register('del_yn_otp')}
                         onValueChange={field.onChange}

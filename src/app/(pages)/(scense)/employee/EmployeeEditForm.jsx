@@ -131,7 +131,7 @@ export default function EmployeeDetailForm(data) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description:  'Có lỗi xảy ra!',
       });
     }
   };

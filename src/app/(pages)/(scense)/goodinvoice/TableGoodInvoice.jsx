@@ -14,6 +14,7 @@ import {
   setLoading,
   setUpdateDetailRequestSuccess,
 } from '@/app/redux/slice/scense/goodinvoice';
+import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
 
 export default function TableGoodInvoice() {
   const [open, setOpen] = useState(false);
@@ -136,6 +137,7 @@ export default function TableGoodInvoice() {
   };
 
   const handleRejectRequest = async (events) => {
+    dispatch(setLayoutLoading(true));
     events.preventDefault();
     try {
       let isApproved = false;
@@ -165,7 +167,6 @@ export default function TableGoodInvoice() {
             title: 'Reject Failed!',
             description: message,
           });
-          dispatch(setLoading(false));
         }
       } else {
         toast({
@@ -173,17 +174,16 @@ export default function TableGoodInvoice() {
           title: 'Reject Failed!',
           description: 'Good Invoice was approved',
         });
-        dispatch(setLoading(false));
       }
     } catch (e) {
       console.log(e);
       toast({
         variant: 'destructive',
         title: 'Reject failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
-      dispatch(setLoading(false));
     } finally {
+      dispatch(setLayoutLoading(false));
       setOpen(false);
     }
   };

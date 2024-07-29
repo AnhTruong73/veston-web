@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect  } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import {
   setLoading,
 } from '@/app/redux/slice/scense/customer';
 import { deleteCustomer } from '@/app/apis/customer/customer';
+import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
 
 export default function CustomerTable() {
   const { toast } = useToast();
@@ -35,6 +36,8 @@ export default function CustomerTable() {
   };
 
   const handleDeleteRequest = async (events) => {
+    dispatch(setLayoutLoading(true));
+
     events.preventDefault();
     try {
       const { status, message } = await deleteCustomer(selecteds);
@@ -54,16 +57,15 @@ export default function CustomerTable() {
           title: 'Delete Failed!',
           description: message,
         });
-        dispatch(setLoading(false));
       }
     } catch (e) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
-      dispatch(setLoading(false));
     } finally {
+      dispatch(setLayoutLoading(false));
       setOpen(false);
     }
   };

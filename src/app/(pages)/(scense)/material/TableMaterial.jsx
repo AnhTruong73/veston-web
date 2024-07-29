@@ -88,33 +88,6 @@ export default function TableMaterial() {
         );
       },
     },
-
-    // {
-    //   title: 'Action',
-    //   className: 'text-center',
-    //   children: (record, _index) => {
-    //     return (
-    //       <>
-    //         <div className="">
-    //           {/* <DialogAddMaterial
-    //             btnNm={'Edit'}
-    //             dialogTitle={'Add New Material'}
-    //             open={openAddMaterial}
-    //             setOpen={setOpenAddMaterial}
-    //             onClickFunction={handleAddRequest}
-    //             isDisabled={!isSaved}
-    //             itemData={record}
-    //           /> */}
-    //           <Button onClick={() => handleEditRequest(record)}>Edit</Button>
-    //           {/* &nbsp;
-    //           <Button onClick={() => handleDetailRequest(record)}>
-    //             Detail
-    //           </Button> */}
-    //         </div>
-    //       </>
-    //     );
-    //   },
-    // },
   ];
   const getSelectedKeys = (selectedArray) => {
     setSelecteds(selectedArray);

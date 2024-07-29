@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect  } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -37,7 +37,7 @@ export default function ShareholderTable() {
   const handleDeleteRequest = async (events) => {
     events.preventDefault();
     try {
-      // 
+      //
       const { status, message } = await deleteShareholder(selecteds);
       if (status == '1') {
         toast({
@@ -61,7 +61,7 @@ export default function ShareholderTable() {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
       dispatch(setLoading(false));
     } finally {

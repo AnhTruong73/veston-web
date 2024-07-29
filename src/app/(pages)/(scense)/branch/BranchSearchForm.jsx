@@ -80,7 +80,7 @@ export default function BranchSearchForm() {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
       dispatch(getListRequestError(false));
     } finally {

@@ -15,17 +15,9 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 
-// import { searchMaterial } from '@/app/apis/material/material';
-// import {
-//   getListRequest,
-//   getListRequestSuccess,
-//   getListRequestError,
-//   refreshMaterial,
-// } from '@/app/redux/slice/scense/material';
 import { useToast } from '@/components/ui/use-toast';
 import { FloatingLabelInput } from '@/components/ui/floating-label-input';
 import { searchGoodInvoiceMasterList } from '@/app/apis/goodinvoice/goodinvoicedetail';
@@ -35,6 +27,7 @@ import {
   getListRequestSuccess,
   refreshGoodInvoice,
 } from '@/app/redux/slice/scense/goodinvoice';
+import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
 
 export default function GoodInvoicelSearchForm() {
   const { toast } = useToast();
@@ -42,16 +35,7 @@ export default function GoodInvoicelSearchForm() {
   const isLoading = useSelector((state) => state.goodinvoice.isLoading);
 
   const form = useForm({
-    defaultValues: {
-      // area_id_otp: '',
-      // area_nm_otp: '',
-      // material_id_otp: '',
-      // material_nm_otp: '',
-      // email_otp: '',
-      // phone_otp: '',
-      // address_otp: '',
-      //   branch_id_otp: userInfo.branch_id,
-    },
+    defaultValues: {},
   });
 
   const handleSearchRequest = async (paramsSearch) => {
@@ -73,24 +57,26 @@ export default function GoodInvoicelSearchForm() {
           title: 'Searching failed!',
           description: message,
         });
-        dispatch(getListRequestError(false));
       }
     } catch (e) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
-      dispatch(getListRequestError(false));
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
 
   const onSubmit = (e) => {
+    dispatch(setLayoutLoading(true));
     dispatch(getListRequest(true));
     handleSearchRequest(e);
   };
 
   useEffect(() => {
+    dispatch(setLayoutLoading(false));
     dispatch(refreshGoodInvoice());
   }, []);
 

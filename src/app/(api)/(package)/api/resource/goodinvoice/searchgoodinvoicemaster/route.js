@@ -18,9 +18,16 @@ export async function POST(req) {
       if (inv_id && branch_id) {
         searchOtp.push({ inv_id: { equals: inv_id } });
         searchOtp.push({ branch_id: { equals: branch_id } });
-      }
-      if (searchOtp.length == 0) {
-        searchOtp.push({ inv_id: { equals: '@@@@AAAA!!!@@@' } });
+      } else {
+        return NextResponse.json(
+          ResponseObject(
+            0,
+            LOGIN_MESSAGE.MISSING_PRIMARY_KEY,
+            [],
+            'Good Invoice Master',
+            null
+          )
+        );
       }
 
       var searchInvoice = await prisma.goodsInvoiceMaster.findMany({
@@ -53,7 +60,7 @@ export async function POST(req) {
             LOGIN_MESSAGE.SEARCH_FAILED,
             [],
             'Good Invoice Master',
-            {}
+            null
           )
         );
       } else {
@@ -64,7 +71,7 @@ export async function POST(req) {
             LOGIN_MESSAGE.SEARCH_SUCCESS,
             searchInvoice,
             'Good Invoice Master',
-            {}
+            null
           )
         );
       }
@@ -72,7 +79,7 @@ export async function POST(req) {
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-      ResponseObject(0, LOGIN_MESSAGE.FAILED, [], 'Good Invoice Master', error)
+      ResponseObject(0, LOGIN_MESSAGE.FAILED, [], 'Good Invoice Master', null)
     );
   }
 }

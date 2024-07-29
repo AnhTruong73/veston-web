@@ -35,9 +35,11 @@ import {
   getListRequestError,
   setSearchOption,
 } from '@/app/redux/slice/scense/employee';
+import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
 import { useToast } from '@/components/ui/use-toast';
 import { FloatingLabelInput } from '@/components/ui/floating-label-input';
 import { FloatingLabelSelect } from '@/components/ui/floating-label-select';
+import { refreshBranch } from '@/app/redux/slice/scense/branch';
 
 export default function EmployeeSearchForm() {
   const { toast } = useToast();
@@ -73,25 +75,27 @@ export default function EmployeeSearchForm() {
           title: 'Searching failed!',
           description: message,
         });
-        dispatch(getListRequestError(false));
       }
     } catch (e) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
-      dispatch(getListRequestError(false));
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
 
   const onSubmit = (e) => {
+    dispatch(setLayoutLoading(true));
     dispatch(getListRequest(true));
     handleSearchRequest(e);
   };
 
   useEffect(() => {
-    // form.handleSubmit();
+    dispatch(setLayoutLoading(false));
+    dispatch(refreshBranch());
   }, []);
 
   return (
@@ -110,10 +114,11 @@ export default function EmployeeSearchForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <FloatingLabelInput 
-                      label="Branch ID"
-                      {...field} 
-                      {...form.register('branch_id_otp')} />
+                      <FloatingLabelInput
+                        label="Branch ID"
+                        {...field}
+                        {...form.register('branch_id_otp')}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -126,10 +131,11 @@ export default function EmployeeSearchForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <FloatingLabelInput 
-                      label="Employee ID"
-                      {...field} 
-                      {...form.register('employee_id_otp')} />
+                      <FloatingLabelInput
+                        label="Employee ID"
+                        {...field}
+                        {...form.register('employee_id_otp')}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

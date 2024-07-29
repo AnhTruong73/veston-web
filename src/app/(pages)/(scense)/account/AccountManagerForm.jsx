@@ -27,6 +27,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
 
 import { useToast } from '@/components/ui/use-toast';
 import { Input } from '@/components/ui/input';
@@ -76,8 +77,10 @@ export default function AccountManagerForm() {
       toast({
         variant: 'destructive',
         title: 'Select failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
 
@@ -101,12 +104,19 @@ export default function AccountManagerForm() {
           break;
         default:
       }
-    } catch {}
+    } catch (e) {
+      toast({
+        variant: 'destructive',
+        title: 'Select failed!',
+        description: 'Có lỗi xảy ra!',
+      });
+    }
   };
 
   useEffect(() => {}, [form.setValue]);
   console.log(Role);
   const onSubmit = (e) => {
+    dispatch(setLayoutLoading(true));
     handlerSubmit(e);
   };
   return (

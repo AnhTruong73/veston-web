@@ -36,10 +36,10 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
 import { Cross1Icon } from '@radix-ui/react-icons';
 import {
   setItemDetailRequest,
-  setLoading,
   setItemDetailRequestSuccess,
   refreshFormCT,
 } from '@/app/redux/slice/scense/customer';
@@ -107,7 +107,6 @@ export default function CustomerDetailForm(data) {
             title: 'Update Failed!',
             description: message,
           });
-          dispatch(setLoading(false));
         }
       } else {
         toast({
@@ -120,9 +119,10 @@ export default function CustomerDetailForm(data) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
-      dispatch(setLoading(false));
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
   const handleInsertRequest = async (paramsSearch) => {
@@ -143,15 +143,15 @@ export default function CustomerDetailForm(data) {
           title: 'Insert Failed!',
           description: message,
         });
-        dispatch(setLoading(false));
       }
     } catch (e) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
-      dispatch(setLoading(false));
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
 
@@ -170,7 +170,7 @@ export default function CustomerDetailForm(data) {
   }, [detailItem, form.setValue, form.reset]);
 
   const onSubmit = (e) => {
-    dispatch(setLoading(true));
+    dispatch(setLayoutLoading(true));
     if (e.flgTp == 'U') handleUpdateRequest(e);
     else if (e.flgTp == 'I') handleInsertRequest(e);
   };

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect  } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -40,12 +40,11 @@ export default function TableEmployee() {
     try {
       const { data } = await searchArea();
       dispatch(getListAreaSuccess(data.rows));
-      
     } catch (e) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
     }
   };
@@ -68,7 +67,7 @@ export default function TableEmployee() {
 
     try {
       const { status, message } = await deleteEmployee(empSel[0]);
-      if(status == 1){
+      if (status == 1) {
         toast({
           variant: 'success',
           title: 'Delete Successfully!',
@@ -84,9 +83,9 @@ export default function TableEmployee() {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
-    }  finally {
+    } finally {
       setOpen(false);
     }
   };
@@ -100,7 +99,6 @@ export default function TableEmployee() {
     dispatch(flagSet(2));
     dispatch(setItemDetailRequest(paramsSearch));
   };
-
 
   const columns = [
     {

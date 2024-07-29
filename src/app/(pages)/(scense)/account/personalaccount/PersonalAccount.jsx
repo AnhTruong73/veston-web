@@ -34,6 +34,7 @@ import { FloatingLabelInput } from '@/components/ui/floating-label-input';
 import { updateAccount } from '@/app/apis/account/account';
 import { updateProfile } from '@/app/apis/employee/employee';
 import { updatePerProfile } from '@/app/redux/slice/authSlice';
+import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
 
 export default function PersonalAccount(data) {
   var personalProfile = useSelector((state) => state.auth.user);
@@ -111,6 +112,7 @@ export default function PersonalAccount(data) {
   console.log(personalProfile);
 
   const onSubmit = (e) => {
+    dispatch(setLayoutLoading(true));
     var emp = {
       ...emp,
       address: e.personalProfile.address,
@@ -124,29 +126,40 @@ export default function PersonalAccount(data) {
   };
 
   const handleResetPass = async () => {
-    var e = { ...e, password: password };
-    e = { ...e, usrname: personalProfile.usrname };
-    if (confirmPassword == password) {
-      const { status, data, message } = await updateAccount(e);
-      if (status == '1') {
-        toast({
-          variant: 'success',
-          title: 'Update Successfully!',
-          description: message,
-        });
+    dispatch(setLayoutLoading(true));
+    try {
+      var e = { ...e, password: password };
+      e = { ...e, usrname: personalProfile.usrname };
+      if (confirmPassword == password) {
+        const { status, data, message } = await updateAccount(e);
+        if (status == '1') {
+          toast({
+            variant: 'success',
+            title: 'Update Successfully!',
+            description: message,
+          });
+        } else {
+          toast({
+            variant: 'destructive',
+            title: 'Failed!',
+            description: 'Change password failed!',
+          });
+        }
       } else {
         toast({
           variant: 'destructive',
-          title: 'Failed!',
-          description: 'Change password failed!',
+          title: 'Change Password Failed!',
+          description: 'Confirm password incorrect',
         });
       }
-    } else {
+    } catch (e) {
       toast({
         variant: 'destructive',
-        title: 'Change Password Failed!',
-        description: 'Confirm password incorrect',
+        title: 'Select failed!',
+        description: 'Có lỗi xảy ra!',
       });
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
 
@@ -181,8 +194,10 @@ export default function PersonalAccount(data) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
 

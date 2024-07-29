@@ -22,6 +22,7 @@ import {
   deleteCostcode,
   insertGoodInvoiceDetail,
 } from '@/app/apis/goodinvoice/goodinvoicedetail';
+import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
 import { formatCurrencyVND } from '@/common/jay';
 
 const GoodInvoicelDetailForm = React.memo(() => {
@@ -187,7 +188,7 @@ const GoodInvoicelDetailForm = React.memo(() => {
   };
 
   const handleAddRequest = async (paramsAdd) => {
-    // events.preventDefault();
+    dispatch(setLayoutLoading(true));
     console.log(paramsAdd);
     try {
       const { status, message, data } = await insertGoodInvoiceDetail({
@@ -207,16 +208,15 @@ const GoodInvoicelDetailForm = React.memo(() => {
           title: 'Save Failed!',
           description: message,
         });
-        dispatch(setLoading(false));
       }
     } catch (e) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
-      dispatch(setLoading(false));
     } finally {
+      dispatch(setLayoutLoading(false));
       setOpenAddMaterial(false);
     }
   };
@@ -224,6 +224,7 @@ const GoodInvoicelDetailForm = React.memo(() => {
     dispatch(setCostcodeRequest(null));
   };
   const handleDeleteRequest = async (events) => {
+    dispatch(setLayoutLoading(true));
     events.preventDefault();
     try {
       const { status, message, data } = await deleteCostcode({
@@ -243,27 +244,26 @@ const GoodInvoicelDetailForm = React.memo(() => {
           title: 'Delete Failed!',
           description: message,
         });
-        dispatch(setLoading(false));
       }
     } catch (e) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
-      dispatch(setLoading(false));
     } finally {
+      dispatch(setLayoutLoading(false));
       setOpen(false);
     }
   };
 
   const handleEditRequest = (paramsEdit) => {
-    console.log(paramsEdit);
     dispatch(setCostcodeRequest(paramsEdit));
     setOpenAddMaterial(true);
   };
 
   const handleConfirmRequest = async (events) => {
+    dispatch(setLayoutLoading(true));
     events.preventDefault();
     try {
       var totalAmtFromGrid = 0;
@@ -284,7 +284,6 @@ const GoodInvoicelDetailForm = React.memo(() => {
             title: 'Confirmed Successfully!',
             description: message,
           });
-          // dispatch(setDetailInsertSuccess(data.rows));
           dispatch(getMasterInsertSuccess(data.rows[0]));
           dispatch(getListRequestSuccess(data.rows[0].goodsInvoiceDetail));
         } else {
@@ -293,7 +292,6 @@ const GoodInvoicelDetailForm = React.memo(() => {
             title: 'Confirmed Failed!',
             description: message,
           });
-          dispatch(setLoading(false));
         }
       } else {
         toast({
@@ -302,17 +300,16 @@ const GoodInvoicelDetailForm = React.memo(() => {
           description:
             'Total amount của General Information phải bằng tổng Total Amount của Detailed Information',
         });
-        dispatch(setLoading(false));
       }
     } catch (e) {
       toast({
         variant: 'destructive',
         title: 'Confirmed failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
-      dispatch(setLoading(false));
     } finally {
       setOpenConfirm(false);
+      dispatch(setLayoutLoading(false));
     }
   };
   return (
@@ -344,12 +341,6 @@ const GoodInvoicelDetailForm = React.memo(() => {
             onClickFunction={handleDeleteRequest}
           />
           &nbsp;
-          {/* <Button
-            disabled={!isSaved}
-            onClick={() => handleConfirmRequest(record)}
-          >
-            Confirm
-          </Button> */}
           <DialogButton
             btnNm={'Confirm'}
             dialogTitle={'Do you want to confirm the Good Invoice?'}

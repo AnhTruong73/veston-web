@@ -87,7 +87,7 @@ export default function EmployeeAddForm(data) {
       toast({
         variant: 'destructive',
         title: 'Select failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
     }
   };
@@ -124,7 +124,7 @@ export default function EmployeeAddForm(data) {
       toast({
         variant: 'destructive',
         title: 'Select failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
     }
   };
@@ -142,7 +142,7 @@ export default function EmployeeAddForm(data) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
     }
   };

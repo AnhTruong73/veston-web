@@ -71,7 +71,7 @@ export default function SHSearchForm() {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
       dispatch(getListRequestError(false));
     }
@@ -103,9 +103,10 @@ export default function SHSearchForm() {
                   <FormItem>
                     <FormControl>
                       <FloatingLabelInput
-                        label="Shareholder ID"  
-                        {...field} 
-                        {...form.register('shareholder_id')} />
+                        label="Shareholder ID"
+                        {...field}
+                        {...form.register('shareholder_id')}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -119,7 +120,7 @@ export default function SHSearchForm() {
                   <FormItem>
                     <FormControl>
                       <FloatingLabelInput
-                        label="Shareholder Name" 
+                        label="Shareholder Name"
                         {...field}
                         {...form.register('shareholder_nm')}
                       />
@@ -136,7 +137,7 @@ export default function SHSearchForm() {
                   <FormItem>
                     <FormControl>
                       <FloatingLabelSelect
-                        label="Delete" 
+                        label="Delete"
                         defaultValue="N"
                         {...form.register('del_yn_otp')}
                         onValueChange={field.onChange}

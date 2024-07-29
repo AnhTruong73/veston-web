@@ -39,6 +39,7 @@ import {
   searchGoodInvoiceMaster,
   updateGoodInvoiceMaster,
 } from '@/app/apis/goodinvoice/goodinvoicedetail';
+import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
 import { FloatingLabelSelect } from '@/components/ui/floating-label-select';
 import {
   getListRequestError,
@@ -75,7 +76,6 @@ export default function GoodInvoicelMasterForm() {
     defaultValues: defaultValue,
   });
   const branchId = form.watch('branch_id');
-  // const totalAmt = form.watch('total_amt');
 
   const handleOnChangeBranchID = async (value) => {
     if (value.length >= 1) {
@@ -100,6 +100,7 @@ export default function GoodInvoicelMasterForm() {
     }
   }, [goodInvoiceMaster]);
   useEffect(() => {
+    dispatch(setLayoutLoading(false));
     dispatch(refreshGoodInvoiceDetail());
     form.reset(defaultValue);
   }, []);
@@ -131,7 +132,6 @@ export default function GoodInvoicelMasterForm() {
           title: 'Searching failed!',
           description: message,
         });
-        dispatch(getListRequestError(false));
       }
     } catch (e) {
       toast({
@@ -139,7 +139,8 @@ export default function GoodInvoicelMasterForm() {
         title: 'Searching failed!',
         description: 'Có lỗi xảy ra!',
       });
-      dispatch(getListRequestError(false));
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
 
@@ -163,7 +164,6 @@ export default function GoodInvoicelMasterForm() {
           title: 'Save failed!',
           description: message,
         });
-        dispatch(getListRequestError(false));
       }
     } catch (e) {
       toast({
@@ -171,7 +171,8 @@ export default function GoodInvoicelMasterForm() {
         title: 'Save failed!',
         description: 'Có lỗi xảy ra!',
       });
-      dispatch(getListRequestError(false));
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
 
@@ -195,7 +196,6 @@ export default function GoodInvoicelMasterForm() {
           title: 'Save failed!',
           description: message,
         });
-        dispatch(getListRequestError(false));
       }
     } catch (e) {
       toast({
@@ -203,7 +203,8 @@ export default function GoodInvoicelMasterForm() {
         title: 'Save failed!',
         description: 'Có lỗi xảy ra!',
       });
-      dispatch(getListRequestError(false));
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
 
@@ -471,7 +472,10 @@ export default function GoodInvoicelMasterForm() {
                 type="button"
                 className="w-full"
                 disabled={isSaved}
-                onClick={() => handleSearchMasterRequest(form.getValues())}
+                onClick={() => {
+                  dispatch(setLayoutLoading(true));
+                  handleSearchMasterRequest(form.getValues());
+                }}
               >
                 Search
               </Button>
@@ -491,6 +495,7 @@ export default function GoodInvoicelMasterForm() {
                 type="button"
                 className="w-full"
                 onClick={() => {
+                  dispatch(setLayoutLoading(true));
                   isSaved
                     ? handleUpdateMasterForm(form.getValues())
                     : handleSaveMasterForm(form.getValues());

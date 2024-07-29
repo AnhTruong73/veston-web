@@ -202,7 +202,7 @@ const ProductDetailForm = React.memo(() => {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
       dispatch(setLoading(false));
     } finally {

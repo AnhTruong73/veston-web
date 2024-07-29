@@ -30,23 +30,16 @@ import {
 } from '@/app/redux/slice/scense/material';
 import { useToast } from '@/components/ui/use-toast';
 import { FloatingLabelInput } from '@/components/ui/floating-label-input';
+import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
 
 export default function MaterialSearchForm() {
   const { toast } = useToast();
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.material.isLoading);
   const userInfo = useSelector((state) => state.auth.user);
-
+  const isDisabled = userInfo.role != 'SUPPERADMIN' ? true : false;
   const form = useForm({
     defaultValues: {
-      // area_id_otp: '',
-      // area_nm_otp: '',
-      // material_id_otp: '',
-      // material_nm_otp: '',
-      // email_otp: '',
-      // phone_otp: '',
-      // address_otp: '',
-
       branch_id_otp: userInfo.personalProfile
         ? userInfo.personalProfile.branchBranch_id
         : '',
@@ -70,26 +63,27 @@ export default function MaterialSearchForm() {
           title: 'Searching failed!',
           description: message,
         });
-        dispatch(getListRequestError(false));
       }
     } catch (e) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
-      dispatch(getListRequestError(false));
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
 
   const onSubmit = (e) => {
     dispatch(getListRequest(true));
+    dispatch(setLayoutLoading(true));
     handleSearchRequest(e);
   };
 
   useEffect(() => {
+    dispatch(setLayoutLoading(false));
     dispatch(refreshMaterial());
-    // form.handleSubmit();
   }, []);
 
   return (
@@ -112,7 +106,7 @@ export default function MaterialSearchForm() {
                         label="Branch ID"
                         {...field}
                         {...form.register('branch_id_otp')}
-                        disabled
+                        disabled={isDisabled}
                       />
                     </FormControl>
                     <FormMessage />

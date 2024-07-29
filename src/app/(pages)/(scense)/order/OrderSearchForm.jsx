@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
+import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
 import {
   Form,
   FormControl,
@@ -22,11 +23,11 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils"
-import { CalendarIcon } from "lucide-react"
-import { format } from "date-fns"
+} from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
+import { CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
 import { useToast } from '@/components/ui/use-toast';
 import { FloatingLabelInput } from '@/components/ui/floating-label-input';
 import { searchOrderMaster } from '@/app/apis/order/order';
@@ -35,6 +36,7 @@ import {
   getListRequestError,
   getListRequestSuccess,
   getParamSearch,
+  refreshOrder,
 } from '@/app/redux/slice/scense/order';
 
 export default function OrderSearchForm() {
@@ -64,7 +66,7 @@ export default function OrderSearchForm() {
           title: 'Searching Successfully!',
           description: message,
         });
-        console.log(data)
+        console.log(data);
         dispatch(getListRequestSuccess(data.rows));
         dispatch(getParamSearch(paramsSearch));
       } else {
@@ -73,27 +75,28 @@ export default function OrderSearchForm() {
           title: 'Searching failed!',
           description: message,
         });
-        dispatch(getListRequestError(false));
       }
     } catch (e) {
       toast({
         variant: 'destructive',
         title: 'Searching failed!',
-        description: e ?? 'Có lỗi xảy ra!',
+        description: 'Có lỗi xảy ra!',
       });
-      dispatch(getListRequestError(false));
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
 
   const onSubmit = (e) => {
+    dispatch(setLayoutLoading(true));
     dispatch(getListRequest(true));
     handleSearchRequest(e);
   };
 
-  //   useEffect(() => {
-  //     dispatch(refreshMaterial());
-  //     // form.handleSubmit();
-  //   }, []);
+  useEffect(() => {
+    dispatch(setLayoutLoading(false));
+    dispatch(refreshOrder(true));
+  }, []);
 
   return (
     <Card>
@@ -172,9 +175,11 @@ export default function OrderSearchForm() {
                             )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value
-                              ? format(field.value, 'dd/MM/yyyy')
-                              : <p>Select Create Date</p>}
+                            {field.value ? (
+                              format(field.value, 'dd/MM/yyyy')
+                            ) : (
+                              <p>Select Create Date</p>
+                            )}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent>
