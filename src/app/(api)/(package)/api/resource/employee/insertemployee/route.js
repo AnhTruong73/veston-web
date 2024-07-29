@@ -5,7 +5,6 @@ import ResponseObject from '../../responseObject';
 import bcrypt from 'bcryptjs';
 import moment from 'moment';
 import prisma from '@/app/(api)/db/db';
-import { storeImageBase64 } from '@/utils/storeImageBase64';
 
 export async function POST(req) {
   try {
@@ -19,7 +18,7 @@ export async function POST(req) {
       password,
       email,
       employee_nm,
-      role = 'SUPPERADMIN',
+      role,
       cre_usr_id,
       flagAcc,
       branch_id,
@@ -32,8 +31,6 @@ export async function POST(req) {
       phone,
     } = body;
     const salInt = parseInt(salary, 10);
-
-    const imgPath = storeImageBase64(imgsrc, 'employees');
 
     const existingEmployee = await prisma.employee.findFirst({
       select: {
@@ -69,7 +66,7 @@ export async function POST(req) {
     if (!existEmail) {
       const insertEmployee = await prisma.employee.create({
         data: {
-          imgsrc: imgPath,
+          imgsrc: imgsrc,
           employee_id: cre_emp,
           employee_nm: employee_nm,
           email: email,

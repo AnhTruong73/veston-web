@@ -2,10 +2,9 @@ import { NextResponse } from 'next/server';
 
 import { LOGIN_MESSAGE } from '@/message';
 import prisma from '@/app/(api)/db/db';
-import { storeImageBase64 } from '@/utils/storeImageBase64';
 import CheckSessionToken from '../../account/CheckSessionToken';
 import ResponseObject from '../../responseObject';
-
+import { v4 as uuidv4 } from 'uuid';
 export async function POST(req) {
   try {
     const body = await req.json();
@@ -17,14 +16,22 @@ export async function POST(req) {
         const tokenInfor = CheckSessionToken(sessionToken);
         if (tokenInfor) {
           const fileArray = formValue.product_img;
-          const imageArray = [];
           if (fileArray.length > 0) {
-            fileArray.forEach((file) => {
-              const imgPath = storeImageBase64(file, 'products');
-              imageArray.push(imgPath);
+            await tx.productImage.deleteMany({
+              where: {
+                product_id: formValue.product_id,
+              },
+            });
+            fileArray.forEach(async (file) => {
+              await tx.productImage.create({
+                data: {
+                  id: uuidv4,
+                  product_id: formValue.product_id,
+                  img_src: file,
+                },
+              });
             });
           }
-          const imgPaths = imageArray.join(';');
           const insertProduct = await tx.product.create({
             data: {
               product_id: formValue.product_id,
@@ -52,20 +59,16 @@ export async function POST(req) {
                   costcode: true,
                 },
               },
-              product_img: true,
+              product_img: {
+                include: {
+                  img_src: true,
+                },
+              },
             },
             orderBy: [{ cre_dt: 'asc' }],
           });
-          const processedProductDetailList = returnProductDetailList.map(
-            (product) => ({
-              ...product,
-              product_img: product.product_img
-                ? product.product_img.split(';')
-                : [],
-            })
-          );
 
-          return processedProductDetailList;
+          return returnProductDetailList;
         }
       });
       console.log(transactionTest);

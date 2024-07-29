@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 
 import { LOGIN_MESSAGE } from '@/message';
 import prisma from '@/app/(api)/db/db';
-import { storeImageBase64 } from '@/utils/storeImageBase64';
 import CheckSessionToken from '../../account/CheckSessionToken';
 import ResponseObject from '../../responseObject';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(req) {
   try {
@@ -17,41 +17,35 @@ export async function POST(req) {
         const tokenInfor = CheckSessionToken(sessionToken);
         if (tokenInfor) {
           const fileArray = formValue.product_img;
-          const imageArray = [];
           if (fileArray.length > 0) {
-            fileArray.forEach((file) => {
-              if (/^data:image\/png;base64,/.test(file)) {
-                const imgPath = storeImageBase64(file, 'products');
-                imageArray.push(imgPath);
-              }
+            await tx.productImage.deleteMany({
+              where: {
+                product_id: formValue.product_id,
+              },
             });
-          }
-          var data = {};
-          if (imageArray.length == 0) {
-            data = {
-              product_name: formValue.product_name,
-              price: formValue.price * 1,
-              category: formValue.category,
-              description: formValue.description,
-              upd_usr_id: tokenInfor.usr_id,
-            };
-          } else {
-            const imgPaths = imageArray.join(';');
-            data = {
-              product_name: formValue.product_name,
-              price: formValue.price * 1,
-              product_img: imgPaths,
-              category: formValue.category,
-              description: formValue.description,
-              upd_usr_id: tokenInfor.usr_id,
-            };
+            fileArray.forEach(async (file) => {
+              await tx.productImage.create({
+                data: {
+                  id: uuidv4,
+                  product_id: formValue.product_id,
+                  img_src: file,
+                },
+              });
+            });
           }
 
           const updateProduct = await tx.product.update({
             where: {
               product_id: formValue.product_id,
             },
-            data: data,
+            data: {
+              product_name: formValue.product_name,
+              price: formValue.price * 1,
+              product_img: imgPaths,
+              category: formValue.category,
+              description: formValue.description,
+              upd_usr_id: tokenInfor.usr_id,
+            },
           });
           const updateStoreProduct = await tx.storeProduct.upsert({
             where: {
@@ -87,7 +81,11 @@ export async function POST(req) {
                   costcode: true,
                 },
               },
-              product_img: true,
+              product_img: {
+                include: {
+                  img_src: true,
+                },
+              },
             },
             orderBy: [{ cre_dt: 'asc' }],
           });
@@ -108,7 +106,6 @@ export async function POST(req) {
       });
       var processedProductDetail = transactionTest.map((product) => ({
         ...product,
-        product_img: product.product_img ? product.product_img.split(';') : [],
         storeProductPrice: getStoreProductPrice
           ? getStoreProductPrice.price
           : 0,

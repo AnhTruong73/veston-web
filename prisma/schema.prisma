@@ -151,7 +151,7 @@ model Product {
   description         String
   category            FashionCategory
   price               Float?
-  product_img         String
+  product_img         ProductImage[]
   cre_usr_id          String                @db.Char(10)
   cre_dt              DateTime              @default(now()) @db.Timestamp(6)
   upd_usr_id          String                @db.Char(10)
@@ -163,6 +163,13 @@ model Product {
   Feedbacks           Feedbacks[]
 
   @@id([product_id])
+}
+
+model ProductImage {
+  id         String   @id
+  Product    Product? @relation(fields: [product_id], references: [product_id])
+  product_id String?  @db.Char(10)
+  img_src    String
 }
 
 model StoreProduct {

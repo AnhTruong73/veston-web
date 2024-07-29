@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 import { LOGIN_MESSAGE } from '@/message';
 import ResponseObject from '../../responseObject';
 import prisma from '@/app/(api)/db/db';
-import { storeImageBase64 } from '@/utils/storeImageBase64';
 
 export async function POST(req) {
   try {
@@ -31,7 +30,6 @@ export async function POST(req) {
       }
       console.log(body);
 
-      const pathName = storeImageBase64(imgsrc, 'employees');
       const updateEmp = await prisma.employee.update({
         where: {
           employee_id: employee_id,
@@ -46,7 +44,7 @@ export async function POST(req) {
           phone: phone,
           email: email,
           del_yn: del_yn,
-          imgsrc: pathName,
+          imgsrc: imgsrc,
         },
       });
       if (updateEmp) {
