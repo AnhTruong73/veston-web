@@ -18,20 +18,24 @@ export async function POST(req) {
         if (tokenInfor) {
           const fileArray = formValue.product_img;
           if (fileArray.length > 0) {
-            await tx.productImage.deleteMany({
-              where: {
-                product_id: formValue.product_id,
-              },
-            });
-            fileArray.forEach(async (file) => {
-              await tx.productImage.create({
-                data: {
-                  id: uuidv4(),
+            try {
+              await tx.productImage.deleteMany({
+                where: {
                   product_id: formValue.product_id,
-                  img_src: file,
                 },
               });
-            });
+              fileArray.forEach(async (file) => {
+                await tx.productImage.create({
+                  data: {
+                    id: uuidv4(),
+                    product_id: formValue.product_id,
+                    img_src: file.img_src,
+                  },
+                });
+              });
+            } catch (e) {
+              console.log(e);
+            }
           }
 
           const updateProduct = await tx.product.update({
