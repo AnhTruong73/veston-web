@@ -247,7 +247,6 @@ const ProductMasterForm = () => {
                         <FormControl>
                           <FloatingLabelInput
                             label="Product Name"
-                            readOnly={isSaved}
                             {...field}
                             {...form.register('product_name')}
                           />
@@ -338,7 +337,6 @@ const ProductMasterForm = () => {
                       <FormItem>
                         <FormControl>
                           <Textarea
-                            readOnly={isSaved}
                             {...field}
                             placeholder="Description"
                             {...form.register('description')}
