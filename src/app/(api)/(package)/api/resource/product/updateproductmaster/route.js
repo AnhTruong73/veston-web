@@ -30,7 +30,7 @@ export async function POST(req) {
                   data: {
                     id: uuidv4(),
                     product_id: formValue.product_id,
-                    img_src: file,
+                    img_src: file.img_src ? file.img_src : file,
                   },
                 });
               });
