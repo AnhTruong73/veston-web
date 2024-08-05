@@ -64,3 +64,11 @@ export const deleteCostcode = (data) => {
     data,
   });
 };
+
+export const searchUnitOfMeasure = (data) => {
+  return axios({
+    method: 'POST',
+    url: `${prefix}/searchunitofmeasure`,
+    data,
+  });
+};

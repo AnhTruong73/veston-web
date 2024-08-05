@@ -31,7 +31,7 @@ const ImageUpload = ({ onImageUpload }) => {
     pngFiles.forEach((file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        imageArray.push(reader.result);
+        imageArray.push({ img_src: reader.result });
 
         if (imageArray.length === pngFiles.length) {
           setSelectedImages([...imageArray]);

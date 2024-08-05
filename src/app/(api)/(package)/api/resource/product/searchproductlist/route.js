@@ -13,13 +13,13 @@ export async function POST(req) {
     const transactionTest = await prisma.$transaction(async (tx) => {
       var searchOtp = [];
       if (Object.keys(body).length > 0) {
-        const { product_id, product_name } = body;
-
-        if (product_id) {
-          searchOtp.push({ product_id: { equals: product_id } });
+        const { product_id_otp, product_name_otp } = body;
+        console.log(body);
+        if (product_id_otp) {
+          searchOtp.push({ product_id: { equals: product_id_otp } });
         }
-        if (product_name) {
-          searchOtp.push({ product_name: { contains: product_name } });
+        if (product_name_otp) {
+          searchOtp.push({ product_name: { contains: product_name_otp } });
         }
       }
       const tokenInfor = CheckSessionToken(sessionToken);
@@ -39,16 +39,24 @@ export async function POST(req) {
           },
           orderBy: [{ cre_dt: 'asc' }],
         });
-        console.log(returnProductDetailList);
         const processedProductDetailList = returnProductDetailList.map(
           (product) => ({
             ...product,
-            product_img: product.product_img[0].img_src,
+            product_img:
+              product.product_img.length > 0
+                ? product.product_img[0].img_src
+                : '',
           })
         );
+
         return processedProductDetailList;
       }
     });
+    if (transactionTest.length < 1) {
+      return NextResponse.json(
+        ResponseObject(0, LOGIN_MESSAGE.SEARCH_FAILED, [], 'Product', null)
+      );
+    }
     return NextResponse.json(
       ResponseObject(
         1,

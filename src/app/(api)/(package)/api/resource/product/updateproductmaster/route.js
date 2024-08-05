@@ -24,12 +24,13 @@ export async function POST(req) {
                   product_id: formValue.product_id,
                 },
               });
+              console.log(fileArray);
               fileArray.forEach(async (file) => {
                 await tx.productImage.create({
                   data: {
                     id: uuidv4(),
                     product_id: formValue.product_id,
-                    img_src: file.img_src,
+                    img_src: file,
                   },
                 });
               });

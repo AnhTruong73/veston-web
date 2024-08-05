@@ -391,7 +391,7 @@ const ProductMasterForm = () => {
                 className="w-full"
                 onClick={() => {
                   dispatch(refreshProductDetail());
-                  if (!isSaved) form.reset(defaultValue);
+                  if (!isSaved) form.reset(newProduct);
                 }}
               >
                 Clear All

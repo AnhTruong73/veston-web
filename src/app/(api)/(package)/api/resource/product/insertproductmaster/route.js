@@ -15,6 +15,17 @@ export async function POST(req) {
       const transactionTest = await prisma.$transaction(async (tx) => {
         const tokenInfor = CheckSessionToken(sessionToken);
         if (tokenInfor) {
+          const insertProduct = await tx.product.create({
+            data: {
+              product_id: formValue.product_id,
+              product_name: formValue.product_name,
+              price: formValue.price * 1,
+              category: formValue.category,
+              description: formValue.description,
+              cre_usr_id: tokenInfor.usr_id,
+              upd_usr_id: tokenInfor.usr_id,
+            },
+          });
           const fileArray = formValue.product_img;
           if (fileArray.length > 0) {
             await tx.productImage.deleteMany({
@@ -32,17 +43,7 @@ export async function POST(req) {
               });
             });
           }
-          const insertProduct = await tx.product.create({
-            data: {
-              product_id: formValue.product_id,
-              product_name: formValue.product_name,
-              price: formValue.price * 1,
-              category: formValue.category,
-              description: formValue.description,
-              cre_usr_id: tokenInfor.usr_id,
-              upd_usr_id: tokenInfor.usr_id,
-            },
-          });
+
           const returnProductDetailList = await tx.product.findMany({
             where: {
               product_id: formValue.product_id,

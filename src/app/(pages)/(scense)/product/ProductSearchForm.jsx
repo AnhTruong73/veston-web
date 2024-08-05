@@ -111,7 +111,6 @@ export default function ProductSearchForm() {
                         label="Product Name"
                         {...field}
                         {...form.register('product_name_otp')}
-                        disabled
                       />
                     </FormControl>
                     <FormMessage />
