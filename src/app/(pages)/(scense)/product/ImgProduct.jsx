@@ -41,7 +41,9 @@ const ImgProduct = ({ product }) => {
         <div className="hidden text-sm text-muted-foreground md:inline">
           (ID: {product.product_id})
         </div>
-        <p className="text-gray-500">{product.description}</p>
+        <p className="text-gray-500 truncate max-w-full">
+          {product.description ? product.description : '(No Description)'}
+        </p>
       </CardContent>
       <CardFooter>
         <span className="text-lg font-semibold">

@@ -34,7 +34,12 @@ export default function TableProductl() {
           <h1 className=" font-semibold mb-4">{category}</h1>
           <div className="flex flex-wrap gap-4 justify-start">
             {groupedProducts[category].map((product) => (
-              <ImgProduct key={product.id} product={product} />
+              <div
+                key={product.id}
+                className="w-[265px] h-[510px] overflow-hidden text-ellipsis line-clamp-3 break-words"
+              >
+                <ImgProduct key={product.id} product={product} />
+              </div>
             ))}
           </div>
         </CardContent>

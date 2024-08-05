@@ -15,10 +15,12 @@ import {
   setUpdateDetailRequestSuccess,
 } from '@/app/redux/slice/scense/goodinvoice';
 import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
+import { useRouter } from 'next/navigation';
 
 export default function TableGoodInvoice() {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
   const [isDisabled, setIsDisabled] = useState(true);
   const [selecteds, setSelecteds] = useState([]);
   const dispatch = useDispatch();
@@ -193,7 +195,7 @@ export default function TableGoodInvoice() {
         <CardTitle className="text-2xl">Result</CardTitle>
       </CardHeader>
       <CardContent className="flex justify-end">
-        <div className="flex space-x-4 p-4 rounded-lg">
+        <div className="flex ">
           <DialogButton
             btnNm={'Reject'}
             dialogTitle={'Do you want to reject?'}
@@ -205,8 +207,19 @@ export default function TableGoodInvoice() {
             setOpen={setOpen}
             onClickFunction={handleRejectRequest}
           />
+          &nbsp;
           <Button asChild>
             <Link href="/goodinvoice/goodinvoicedetail">Create</Link>
+          </Button>
+          &nbsp;
+          <Button
+            disabled={isDisabled}
+            onClick={() => {
+              console.log(selecteds);
+              // router.push('/goodinvoice/goodinvoicedetail');
+            }}
+          >
+            Amend
           </Button>
         </div>
       </CardContent>
