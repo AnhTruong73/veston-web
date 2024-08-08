@@ -47,13 +47,14 @@ import {
   getMasterInsertSuccess,
   refreshGoodInvoiceDetail,
 } from '@/app/redux/slice/scense/goodinvoicedetail';
+import { useSearchParams } from 'next/navigation';
 
-export default function GoodInvoicelMasterForm() {
+export default function GoodInvoicelMasterForm(props) {
   const { toast } = useToast();
   const dispatch = useDispatch();
   const [isApproved, setIsApproved] = useState(false);
   const isSaved = useSelector((state) => state.goodinvoicedetail.isSaved);
-
+  const params = useSearchParams();
   const isLoading = useSelector((state) => state.goodinvoicedetail.isLoading);
   const userInfo = useSelector((state) => state.auth.user);
   var goodInvoiceMaster = useSelector(
@@ -103,6 +104,13 @@ export default function GoodInvoicelMasterForm() {
     dispatch(setLayoutLoading(false));
     dispatch(refreshGoodInvoiceDetail());
     form.reset(defaultValue);
+    if (params.has('branch_id') && params.has('inv_id')) {
+      dispatch(setLayoutLoading(true));
+      handleSearchMasterRequest({
+        branch_id: params.get('branch_id'),
+        inv_id: params.get('inv_id'),
+      });
+    }
   }, []);
 
   useEffect(() => {

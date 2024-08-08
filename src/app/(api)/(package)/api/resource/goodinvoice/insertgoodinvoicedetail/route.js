@@ -3,32 +3,45 @@ import { NextResponse } from 'next/server';
 import { LOGIN_MESSAGE } from '@/message';
 import ResponseObject from '../../responseObject';
 import prisma from '@/app/(api)/db/db';
+import { v4 as uuidv4 } from 'uuid';
+import CheckSessionToken from '../../account/CheckSessionToken';
 
 export async function POST(req) {
   try {
     const body = await req.json();
+    const sessionToken = req.cookies.get('token')?.value;
     const { paramsAdd, goodInvoiceMaster } = body;
+    const userInfor = CheckSessionToken(sessionToken);
+    console.log(
+      paramsAdd.quantity +
+        '*' +
+        paramsAdd.unitAmount +
+        '*' +
+        (100 - paramsAdd.discount) / 100 +
+        '*' +
+        (100 + paramsAdd.tax) / 100
+    );
     const transactionTest = await prisma.$transaction(async (tx) => {
-      const JWT_SECRET = process.env.SECRET_KET;
-      const jwt = require('jsonwebtoken');
-      const sessionToken = req.cookies.get('token')?.value;
-      if (sessionToken) {
-        const userInfor = jwt.decode(sessionToken, JWT_SECRET).id;
+      if (userInfor) {
+        const costCodeId = uuidv4();
         const mergeCostCode = await tx.costcode.upsert({
-          where: { cost_cd: paramsAdd.cost_cd },
+          where: {
+            id: paramsAdd.costCd ? paramsAdd.costCd : 'Create New',
+          },
           update: {
-            // cost_nm: paramsAdd.costcode.cost_nm,
-            // cost_color: paramsAdd.costcode.cost_color,
-            // cost_type: paramsAdd.costcode.cost_type,
-            // cost_uom: paramsAdd.costcode.cost_uom,
-            // upd_usr_id: userInfor.usr_id,
+            cost_nm: paramsAdd.costNm,
+            cost_color: paramsAdd.costColor,
+            cost_type: paramsAdd.costType,
+            cost_uom: paramsAdd.costUom,
+            upd_usr_id: userInfor.usr_id,
           },
           create: {
-            cost_cd: paramsAdd.costcode.cost_cd,
-            cost_nm: paramsAdd.costcode.cost_nm,
-            cost_color: paramsAdd.costcode.cost_color,
-            cost_type: paramsAdd.costcode.cost_type,
-            cost_uom: paramsAdd.costcode.cost_uom,
+            id: costCodeId,
+            cost_cd: costCodeId,
+            cost_nm: paramsAdd.costNm,
+            cost_color: paramsAdd.costColor,
+            cost_type: paramsAdd.costType,
+            cost_uom: paramsAdd.costUom,
             cre_usr_id: userInfor.usr_id,
             upd_usr_id: userInfor.usr_id,
           },
@@ -39,39 +52,35 @@ export async function POST(req) {
             branch_id_inv_id_cost_cd: {
               branch_id: goodInvoiceMaster.branch_id,
               inv_id: goodInvoiceMaster.inv_id,
-              cost_cd: paramsAdd.cost_cd,
+              cost_cd: paramsAdd.costCd ? paramsAdd.costCd : 'Create New',
             },
           },
           update: {
             quantity: paramsAdd.quantity * 1,
-            unit_amount: paramsAdd.unit_amount * 1,
+            unit_amount: paramsAdd.unitAmount * 1,
             discount: paramsAdd.discount * 1,
             tax: paramsAdd.tax * 1,
 
             total_amt:
-              (((paramsAdd.quantity *
-                paramsAdd.unit_amount *
-                (100 - paramsAdd.discount)) /
-                100) *
-                (100 + paramsAdd.tax)) /
-              100,
+              paramsAdd.quantity *
+              paramsAdd.unitAmount *
+              ((100 - paramsAdd.discount) / 100) *
+              ((100 + paramsAdd.tax * 1) / 100),
             upd_usr_id: userInfor.usr_id,
           },
           create: {
             branch_id: goodInvoiceMaster.branch_id,
             inv_id: goodInvoiceMaster.inv_id,
-            cost_cd: paramsAdd.cost_cd,
+            cost_cd: costCodeId,
             quantity: paramsAdd.quantity * 1,
-            unit_amount: paramsAdd.unit_amount * 1,
+            unit_amount: paramsAdd.unitAmount * 1,
             discount: paramsAdd.discount * 1,
             tax: paramsAdd.tax * 1,
             total_amt:
-              (((paramsAdd.quantity *
-                paramsAdd.unit_amount *
-                (100 - paramsAdd.discount)) /
-                100) *
-                (100 + paramsAdd.tax)) /
-              100,
+              paramsAdd.quantity *
+              paramsAdd.unitAmount *
+              ((100 - paramsAdd.discount) / 100) *
+              ((100 + paramsAdd.tax * 1) / 100),
             cre_usr_id: userInfor.usr_id,
             upd_usr_id: userInfor.usr_id,
           },
@@ -102,7 +111,6 @@ export async function POST(req) {
         return returnGoodInvoiceDetailList;
       }
     });
-    console.log(transactionTest);
     return NextResponse.json(
       ResponseObject(
         1,

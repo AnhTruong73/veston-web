@@ -10,49 +10,43 @@ export async function POST(req) {
     const body = await req.json();
 
     const sessionToken = req.cookies.get('token')?.value;
-    const transactionTest = await prisma.$transaction(async (tx) => {
-      var searchOtp = [];
-      if (Object.keys(body).length > 0) {
-        const { product_id_otp, product_name_otp } = body;
-        console.log(body);
-        if (product_id_otp) {
-          searchOtp.push({ product_id: { equals: product_id_otp } });
-        }
-        if (product_name_otp) {
-          searchOtp.push({ product_name: { contains: product_name_otp } });
-        }
-      }
-      const tokenInfor = CheckSessionToken(sessionToken);
-      if (tokenInfor) {
-        const returnProductDetailList = await tx.product.findMany({
-          where: {
-            AND: searchOtp,
-          },
-          select: {
-            product_id: true,
-            product_name: true,
-            price: true,
-            category: true,
-            description: true,
-            ProductDetail: true,
-            product_img: true,
-          },
-          orderBy: [{ cre_dt: 'asc' }],
-        });
-        const processedProductDetailList = returnProductDetailList.map(
-          (product) => ({
-            ...product,
-            product_img:
-              product.product_img.length > 0
-                ? product.product_img[0].img_src
-                : '',
-          })
-        );
 
-        return processedProductDetailList;
+    var searchOtp = [];
+    if (Object.keys(body).length > 0) {
+      const { product_id_otp, product_name_otp } = body;
+      console.log(body);
+      if (product_id_otp) {
+        searchOtp.push({ product_id: { equals: product_id_otp } });
       }
-    });
-    if (transactionTest.length < 1) {
+      if (product_name_otp) {
+        searchOtp.push({ product_name: { contains: product_name_otp } });
+      }
+    }
+    const tokenInfor = CheckSessionToken(sessionToken);
+    var processedProductDetailList = [];
+    if (tokenInfor) {
+      const returnProductDetailList = await prisma.product.findMany({
+        where: {
+          AND: searchOtp,
+        },
+        select: {
+          product_id: true,
+          product_name: true,
+          price: true,
+          category: true,
+          description: true,
+          ProductDetail: true,
+          product_img: true,
+        },
+        orderBy: [{ cre_dt: 'asc' }],
+      });
+      processedProductDetailList = returnProductDetailList.map((product) => ({
+        ...product,
+        product_img:
+          product.product_img.length > 0 ? product.product_img[0].img_src : '',
+      }));
+    }
+    if (processedProductDetailList.length < 1) {
       return NextResponse.json(
         ResponseObject(0, LOGIN_MESSAGE.SEARCH_FAILED, [], 'Product', null)
       );
@@ -61,7 +55,7 @@ export async function POST(req) {
       ResponseObject(
         1,
         LOGIN_MESSAGE.SEARCH_SUCCESS,
-        transactionTest,
+        processedProductDetailList,
         'Product',
         null
       )

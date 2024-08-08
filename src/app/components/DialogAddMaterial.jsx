@@ -33,6 +33,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { searchUnitOfMeasure } from '../apis/goodinvoice/goodinvoicedetail';
+import { formatCurrencyVND } from '@/common/jay';
 
 const DialogAddMaterial = React.memo(
   ({
@@ -45,6 +46,7 @@ const DialogAddMaterial = React.memo(
     setOpen,
   }) => {
     const itemData = useSelector((state) => state.goodinvoicedetail.costcode);
+    const [costCd, setCostCd] = useState('');
     const [costNm, setCostName] = useState('');
     const [costColor, setCostColor] = useState('');
     const [costUom, setCostUom] = useState('');
@@ -58,6 +60,7 @@ const DialogAddMaterial = React.memo(
     const handleConfirm = async () => {
       try {
         const costCode = {
+          costCd,
           costNm,
           costColor,
           costUom,
@@ -86,6 +89,29 @@ const DialogAddMaterial = React.memo(
       };
       if (open) {
         setDataForUom();
+        if (itemData) {
+          setCostCd(itemData.cost_cd);
+          setCostName(itemData.costcode.cost_nm);
+          setCostColor(itemData.costcode.cost_color);
+          setCostUom(itemData.costcode.cost_uom);
+          setCostType(itemData.costcode.cost_type);
+          setQuantity(itemData.quantity);
+          setUnitAmount(itemData.unit_amount);
+          setDiscount(itemData.discount);
+          setTax(itemData.tax);
+          setTotalAmt(formatCurrencyVND(itemData.total_amt));
+        } else {
+          setCostCd('');
+          setCostName('');
+          setCostColor('');
+          setCostUom('');
+          setCostType('');
+          setQuantity('');
+          setUnitAmount('');
+          setDiscount('');
+          setTax('');
+          setTotalAmt('');
+        }
       }
     }, [open]);
     return (
@@ -99,33 +125,46 @@ const DialogAddMaterial = React.memo(
           <DialogContent className={'overflow-y-scroll w-[70%] max-h-[700px]'}>
             <DialogHeader>
               <DialogTitle>{dialogTitle}</DialogTitle>
+              {costCd ? (
+                <DialogTitle className="">ID: ${costCd} </DialogTitle>
+              ) : (
+                ``
+              )}
+              <br />
             </DialogHeader>
             <FloatingLabelInput
+              value={costNm}
               label="Material Name"
               onChange={(e) => {
                 setCostName(e.target.value);
               }}
             />
             <FloatingLabelInput
+              value={costColor}
               label="Material Color"
               onChange={(e) => {
                 setCostColor(e.target.value);
               }}
             />
             <FloatingLabelInput
+              value={costType}
               label="Material Type"
               onChange={(e) => {
                 setCostType(e.target.value);
               }}
             />
             <FloatingLabelSelect
+              value={costUom}
               label="Unit of Measure"
               onValueChange={(e) => {
                 setCostUom(e);
               }}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Please select Unit of Measure!" />
+                <SelectValue
+                  value={costType}
+                  placeholder="Please select Unit of Measure!"
+                />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -140,6 +179,7 @@ const DialogAddMaterial = React.memo(
             </FloatingLabelSelect>
 
             <FloatingLabelInput
+              value={quantity}
               label="Quantity"
               onChange={(e) => {
                 setQuantity(e.target.value);
@@ -149,6 +189,7 @@ const DialogAddMaterial = React.memo(
               step="any"
             />
             <FloatingLabelInput
+              value={unitAmount}
               label="Unit Amount"
               onChange={(e) => {
                 setUnitAmount(e.target.value);
@@ -158,6 +199,7 @@ const DialogAddMaterial = React.memo(
               step="any"
             />
             <FloatingLabelInput
+              value={discount}
               label="Discount"
               onChange={(e) => {
                 setDiscount(e.target.value);
@@ -167,6 +209,7 @@ const DialogAddMaterial = React.memo(
               step="any"
             />
             <FloatingLabelInput
+              value={tax}
               label="Tax"
               onChange={(e) => {
                 setTax(e.target.value);
@@ -176,9 +219,10 @@ const DialogAddMaterial = React.memo(
               step="any"
             />
             <FloatingLabelInput
+              value={totalAmt}
               label="Total Amount"
               onChange={(e) => {
-                setTax(e.target.value);
+                setTotalAmt(formatCurrencyVND(e.target.value));
               }}
               readOnly
             />

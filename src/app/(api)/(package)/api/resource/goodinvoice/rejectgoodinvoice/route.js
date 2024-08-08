@@ -11,43 +11,59 @@ export async function POST(req) {
     const sessionToken = req.cookies.get('token')?.value;
 
     var listParam = Object.keys(body ?? {}).map((key) => body[key]);
-    // console.log(listParam);
 
     const tokenInfor = CheckSessionToken(sessionToken);
     if (tokenInfor) {
       if (listParam.length > 0) {
-        const rstBranch = await prisma.$transaction(
-          listParam.map((param) =>
-            prisma.branch.update({
+        const rstGoodsInv = await prisma.$transaction(async (tx) => {
+          for (var i = 0; i < listParam.length; i++) {
+            await tx.goodsInvoiceMaster.update({
               where: {
-                branch_id: param,
+                branch_id_inv_id: {
+                  branch_id: listParam[i].branch_id,
+                  inv_id: listParam[i].inv_id,
+                },
               },
               data: {
                 upd_usr_id: tokenInfor.usr_id,
-                del_yn: 'Y',
+                status: 'REJECT',
               },
-            })
-          )
-        );
-        if (rstBranch) {
+            });
+          }
+          return true;
+        });
+
+        if (rstGoodsInv) {
           return NextResponse.json(
             ResponseObject(
               1,
-              LOGIN_MESSAGE.DELETE_SUCESS,
+              LOGIN_MESSAGE.REJECT_SUCCESS,
               [],
-              'Branch',
-              rstBranch
+              'GoodsInvoiceMaster',
+              null
             )
           );
         }
       } else {
         return NextResponse.json(
-          ResponseObject(0, LOGIN_MESSAGE.MISSING_PARAMETER, [], 'Branch', null)
+          ResponseObject(
+            0,
+            LOGIN_MESSAGE.MISSING_PARAMETER,
+            [],
+            'GoodsInvoiceMaster',
+            null
+          )
         );
       }
     } else {
       return NextResponse.json(
-        ResponseObject(0, LOGIN_MESSAGE.INVALID_TOKEN, [], 'Branch', null)
+        ResponseObject(
+          0,
+          LOGIN_MESSAGE.INVALID_TOKEN,
+          [],
+          'GoodsInvoiceMaster',
+          null
+        )
       );
     }
   } catch (error) {

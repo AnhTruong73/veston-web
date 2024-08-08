@@ -4,6 +4,7 @@ const initialState = {
   isLoading: false,
   dataSource: [],
   detail: null,
+  isNeedSearch: false,
 };
 
 export const goodInvoiceSlice = createSlice({
@@ -29,6 +30,9 @@ export const goodInvoiceSlice = createSlice({
     },
     setLoading: (state, action) => {
       state.isLoading = action.payload;
+    },
+    setNeedSearch: (state, action) => {
+      state.isNeedSearch = action.payload;
     },
     setItemDetailRequest: (state, action) => {
       state.detail = action.payload;
@@ -56,5 +60,6 @@ export const {
   setLoading,
   setItemDetailRequestSuccess,
   setUpdateDetailRequestSuccess,
+  setNeedSearch,
 } = goodInvoiceSlice.actions;
 export default goodInvoiceSlice.reducer;

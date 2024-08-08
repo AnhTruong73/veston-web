@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { LOGIN_MESSAGE } from '@/message';
 import ResponseObject from '../../responseObject';
 import prisma from '@/app/(api)/db/db';
+import CheckSessionToken from '../../account/CheckSessionToken';
 
 export async function POST(req) {
   try {
@@ -10,6 +11,12 @@ export async function POST(req) {
     var searchOtp = [];
     var searchAc = [];
 
+    const sessionToken = req.cookies.get('token')?.value;
+    const tokenInfor = CheckSessionToken(sessionToken);
+    console.log(tokenInfor.role);
+    if (tokenInfor.role != 'SUPPERADMIN') {
+      searchOtp.push({ position: { not: 'GENERALMANAGER' } });
+    }
     if (Object.keys(body).length > 0) {
       const { employee_id_otp, branch_id_otp, employee_name_otp, del_yn_otp } =
         body;

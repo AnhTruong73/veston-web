@@ -26,6 +26,8 @@ import {
   getListRequestError,
   getListRequestSuccess,
   refreshGoodInvoice,
+  setLoading,
+  setNeedSearch,
 } from '@/app/redux/slice/scense/goodinvoice';
 import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
 
@@ -33,6 +35,7 @@ export default function GoodInvoicelSearchForm() {
   const { toast } = useToast();
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.goodinvoice.isLoading);
+  const isNeedSearch = useSelector((state) => state.goodinvoice.isNeedSearch);
 
   const form = useForm({
     defaultValues: {},
@@ -65,6 +68,7 @@ export default function GoodInvoicelSearchForm() {
         description: 'Có lỗi xảy ra!',
       });
     } finally {
+      dispatch(setNeedSearch(false));
       dispatch(setLayoutLoading(false));
     }
   };
@@ -79,6 +83,12 @@ export default function GoodInvoicelSearchForm() {
     dispatch(setLayoutLoading(false));
     dispatch(refreshGoodInvoice());
   }, []);
+
+  useEffect(() => {
+    if (isNeedSearch) {
+      handleSearchRequest(form.getValues());
+    }
+  }, [isNeedSearch]);
 
   return (
     <Card>

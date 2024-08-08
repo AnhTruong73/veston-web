@@ -12,7 +12,6 @@ export async function POST(req) {
     if (sessionToken) {
       const userInfor = jwt.decode(sessionToken, JWT_SECRET).id;
       const body = await req.json();
-      console.log(body);
       var searchOtp = [];
       const { branch_id_otp, inv_id_otp } = body;
       if (inv_id_otp) {
@@ -56,7 +55,6 @@ export async function POST(req) {
           )
         );
       } else {
-        console.log(searchInvoice);
         return NextResponse.json(
           ResponseObject(
             1,

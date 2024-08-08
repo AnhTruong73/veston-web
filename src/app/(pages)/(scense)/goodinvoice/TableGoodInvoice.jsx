@@ -10,8 +10,10 @@ import DialogButton from '@/app/components/DialogButton';
 import { rejectGoodInvoice } from '@/app/apis/goodinvoice/goodinvoicedetail';
 import { formatCurrencyVND } from '@/common/jay';
 import { useToast } from '@/components/ui/use-toast';
+
 import {
   setLoading,
+  setNeedSearch,
   setUpdateDetailRequestSuccess,
 } from '@/app/redux/slice/scense/goodinvoice';
 import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
@@ -127,6 +129,31 @@ export default function TableGoodInvoice() {
         );
       },
     },
+    {
+      title: 'Action',
+      children: (record, _index) => {
+        return (
+          <>
+            <div className="flex space-x-4 p-4 rounded-lg">
+              &nbsp;
+              <Button>
+                <Link
+                  href={{
+                    pathname: '/goodinvoice/goodinvoicedetail',
+                    query: {
+                      branch_id: record.branch_id,
+                      inv_id: record.inv_id,
+                    },
+                  }}
+                >
+                  Amend
+                </Link>
+              </Button>
+            </div>
+          </>
+        );
+      },
+    },
   ];
 
   const getSelectedKeys = (selectedArray) => {
@@ -140,29 +167,30 @@ export default function TableGoodInvoice() {
 
   const handleRejectRequest = async (events) => {
     dispatch(setLayoutLoading(true));
-    events.preventDefault();
+    var listReject = [];
     try {
       let isApproved = false;
       for (const item of dataSource) {
         for (const inv_id in selecteds) {
-          console.log(item);
-          if (inv_id == item.inv_id && item.status == 'APPROVE') {
+          if (
+            inv_id == item.inv_id &&
+            (item.status == 'APPROVE' || item.status == 'REJECT')
+          ) {
             isApproved = true;
+          } else {
+            listReject.push(item);
           }
         }
       }
-      if (isApproved) {
-        const { status, message } = await rejectGoodInvoice(selecteds);
+      if (!isApproved) {
+        const { status, message } = await rejectGoodInvoice(listReject);
         if (status == '1') {
+          dispatch(setNeedSearch(true));
           toast({
             variant: 'success',
             title: 'Reject Successfully!',
             description: message,
           });
-          dataSource = dataSource.filter(
-            (data) => !selecteds.includes(data.branch_id)
-          );
-          dispatch(setUpdateDetailRequestSuccess(dataSource));
         } else {
           toast({
             variant: 'destructive',
@@ -174,7 +202,7 @@ export default function TableGoodInvoice() {
         toast({
           variant: 'destructive',
           title: 'Reject Failed!',
-          description: 'Good Invoice was approved',
+          description: 'Good Invoice was approved or rejected',
         });
       }
     } catch (e) {
@@ -210,16 +238,6 @@ export default function TableGoodInvoice() {
           &nbsp;
           <Button asChild>
             <Link href="/goodinvoice/goodinvoicedetail">Create</Link>
-          </Button>
-          &nbsp;
-          <Button
-            disabled={isDisabled}
-            onClick={() => {
-              console.log(selecteds);
-              // router.push('/goodinvoice/goodinvoicedetail');
-            }}
-          >
-            Amend
           </Button>
         </div>
       </CardContent>
