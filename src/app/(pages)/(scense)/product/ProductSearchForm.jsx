@@ -28,6 +28,7 @@ import {
   refreshProductDetail,
 } from '@/app/redux/slice/scense/product';
 import { searchProductList } from '@/app/apis/product/product';
+import { setLayoutLoading } from '@/app/redux/slice/stateSlice';
 
 export default function ProductSearchForm() {
   const { toast } = useToast();
@@ -64,11 +65,14 @@ export default function ProductSearchForm() {
         description: 'Có lỗi xảy ra!',
       });
       dispatch(getListRequestError(false));
+    } finally {
+      dispatch(setLayoutLoading(false));
     }
   };
 
   const onSubmit = (e) => {
     dispatch(getListRequest(true));
+    dispatch(setLayoutLoading(true));
     handleSearchRequest(e);
   };
   useEffect(() => {

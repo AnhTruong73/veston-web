@@ -13,9 +13,9 @@ import Link from 'next/link';
 const ImgProduct = ({ product }) => {
   const router = useRouter();
 
-  // const handleImageClick = () => {
-  //   router.push(`/product/productdetail/product_id=${product.product_id}`);
-  // };
+  const handleImageClick = () => {
+    router.push(`/product/productdetail?product_id=${product.product_id}`);
+  };
 
   return (
     <Card>
@@ -24,18 +24,20 @@ const ImgProduct = ({ product }) => {
           src={product.product_img}
           alt={product.product_name}
           className="w-[215px] h-[300px] object-cover cursor-pointer"
-          // onClick={handleImageClick}
+          onClick={handleImageClick}
         />
       </CardHeader>
       <CardContent>
         <Link
-          className="text-xl font-bold"
+          className=""
           href={{
             pathname: '/product/productdetail',
             query: { product_id: product.product_id },
           }}
         >
-          {product.product_name}
+          <p className="text-xl font-bold truncate max-w-full">
+            {product.product_name}
+          </p>
         </Link>
         <br />
         <div className="hidden text-sm text-muted-foreground md:inline">

@@ -20,27 +20,48 @@ export async function GET(req, { params }) {
       orderBy: [{ cre_dt: 'asc' }],
     });
 
-    const processedProductDetailList = await Promise.all(
-      returnProductDetailList.map(async (product) => {
-        const getProductRating = await prisma.feedbacks.aggregate({
-          where: {
-            product_id: product.product_id,
-          },
-          _avg: {
-            rate: true,
-          },
-          _count: {
-            rate: true,
-          },
-        });
+    // const processedProductDetailList = await Promise.all(
+    //   returnProductDetailList.map(async (product) => {
+    //     const getProductRating = await prisma.feedbacks.aggregate({
+    //       where: {
+    //         product_id: product.product_id,
+    //       },
+    //       _avg: {
+    //         rate: true,
+    //       },
+    //       _count: {
+    //         rate: true,
+    //       },
+    //     });
 
-        return {
-          ...product,
+    //     return {
+    //       ...product,
+    //       rating: getProductRating._avg.rate || 0,
+    //       feedback_quantity: getProductRating._count.rate || 0,
+    //     };
+    //   })
+    // );
+    var processedProductDetailList = [];
+    for (let i = 0; i < returnProductDetailList.length; i++) {
+      const getProductRating = await prisma.feedbacks.aggregate({
+        where: {
+          product_id: returnProductDetailList[i].product_id,
+        },
+        _avg: {
+          rate: true,
+        },
+        _count: {
+          rate: true,
+        },
+      });
+      if (getProductRating) {
+        processedProductDetailList.push({
+          ...returnProductDetailList[i],
           rating: getProductRating._avg.rate || 0,
           feedback_quantity: getProductRating._count.rate || 0,
-        };
-      })
-    );
+        });
+      }
+    }
 
     return NextResponse.json(
       ResponseObject(

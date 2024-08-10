@@ -36,7 +36,7 @@ export default function TableProductl() {
             {groupedProducts[category].map((product) => (
               <div
                 key={product.id}
-                className="w-[265px] h-[510px] overflow-hidden text-ellipsis line-clamp-3 break-words"
+                className="w-[265px] h-[530px] overflow-hidden text-ellipsis line-clamp-3 break-words"
               >
                 <ImgProduct key={product.id} product={product} />
               </div>

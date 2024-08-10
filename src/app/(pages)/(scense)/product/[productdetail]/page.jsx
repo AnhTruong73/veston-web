@@ -7,7 +7,7 @@ export default function GoodInvoiceDetail() {
       <div className="space-y-4 rounded-lg w-full">
         <h1>Product Detail</h1>
         <ProductMasterForm />
-        <ProductDetailForm />
+        {/* <ProductDetailForm /> */}
       </div>
     </>
   );

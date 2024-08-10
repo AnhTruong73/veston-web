@@ -57,6 +57,7 @@ const ImageUpload = ({ onImageUpload }) => {
         {selectedImages &&
           selectedImages?.map((selectedImage, index) => (
             <img
+              key={selectedImage.img_src}
               src={selectedImage.img_src}
               // src ='/images/products/1720636671335.png'
               alt="Selected"
