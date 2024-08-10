@@ -262,6 +262,7 @@ export default function OrderlMasterForm() {
                       <Input
                         {...field}
                         {...form.register('est_delivery')}
+                        type="date"
                         readOnly={
                           orderDetail.status != 'REQUEST' ? true : false
                         }
@@ -280,6 +281,7 @@ export default function OrderlMasterForm() {
                     <FormControl>
                       <Input
                         readOnly
+                        type="date"
                         {...field}
                         {...form.register('actual_delivery')}
                       />

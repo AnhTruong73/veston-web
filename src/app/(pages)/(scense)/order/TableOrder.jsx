@@ -8,7 +8,7 @@ import Link from 'next/link';
 import DialogButton from '@/app/components/DialogButton';
 import { deleteOrder, rejectOrder, searchSewing } from '@/app/apis/order/order';
 import { format } from 'date-fns';
-import { setItemDetailRequest } from '@/app/redux/slice/scense/order';
+import { setDone, setItemDetailRequest } from '@/app/redux/slice/scense/order';
 import { useToast } from '@/components/ui/use-toast';
 
 export default function TableOrder() {
@@ -129,6 +129,16 @@ export default function TableOrder() {
 
   const handleEditRequest = async (record) => {
     console.log(record);
+    dispatch(setDone(null));
+    if (record.sewingticket.length > 0 && record.status != 'DONE') {
+      dispatch(setDone('DONE'));
+      for (let i = 0; i < record.sewingticket.length; i++) {
+        if (record.sewingticket[i].status != 'DONE') {
+          dispatch(setDone(null));
+          break;
+        }
+      }
+    }
     dispatch(setItemDetailRequest(record));
   };
 
