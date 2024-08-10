@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { LOGIN_MESSAGE } from '@/message';
 import ResponseObject from '../../responseObject';
 import prisma from '@/app/(api)/db/db';
+import moment from 'moment';
 
 export async function POST(req) {
   try {
@@ -12,9 +13,8 @@ export async function POST(req) {
     if (sessionToken) {
       const userInfor = jwt.decode(sessionToken, JWT_SECRET).id;
       const body = await req.json();
-      // console.log(body);
       var searchOtp = [];
-      const { orderId, statusDone } = body;
+      const { orderId, statusDone, est_delivery } = body;
       if (orderId) {
         searchOtp.push({ orderId: { equals: orderId } });
       }
@@ -24,6 +24,7 @@ export async function POST(req) {
             AND: searchOtp,
           },
           data: {
+            est_delivery: est_delivery,
             status: statusDone,
           },
         });
@@ -33,6 +34,7 @@ export async function POST(req) {
             AND: searchOtp,
           },
           data: {
+            actual_delivery: moment(new Date()).format('YYYY-MM-DD'),
             status: statusDone,
           },
         });
@@ -41,6 +43,7 @@ export async function POST(req) {
             AND: searchOtp,
           },
           data: {
+            actual_delivery: moment(new Date()).format('YYYY-MM-DD'),
             status: statusDone,
           },
         });
